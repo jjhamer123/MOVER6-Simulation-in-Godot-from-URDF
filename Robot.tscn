@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://df7u8lvb6nooj"]
+
+[ext_resource type="PackedScene" uid="uid://cew2dlafvimys" path="res://CPMOVER6.urdf" id="1_lhh6t"]
+[ext_resource type="Script" uid="uid://bxkcyjvjf5y1g" path="res://Helpers/logger.gd" id="2_8mo4m"]
+[ext_resource type="Script" uid="uid://byke5iphumakq" path="res://addons/godot_urdf/controller/RobotJointController.gd" id="3_gr7he"]
+[ext_resource type="Script" uid="uid://bb8d0ecyuc13k" path="res://control.gd" id="4_bjiqm"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cn6ah"]
+height = 1.0
+
+[node name="Projectrout" type="Node3D" unique_id=1900349962]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=214117015]
+transform = Transform3D(0.65851796, -0.39033365, 0.6434235, -0.1446512, 0.77338135, 0.6172175, -0.7385324, -0.49952078, 0.45282328, 0.5377769, 0.7138722, 0.3462047)
+current = true
+fov = 46.139534
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D" unique_id=818406270]
+transform = Transform3D(0.9076689, -1.4901161e-08, -0.4196872, -0.14465125, 0.93872595, -0.3128411, 0.39397126, 0.34466428, 0.8520523, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=2132798539]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=260114531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("CylinderShape3D_cn6ah")
+
+[node name="CPRMover6" parent="." unique_id=45447336 instance=ExtResource("1_lhh6t")]
+
+[node name="logger" type="Node" parent="." unique_id=1883166045 node_paths=PackedStringArray("godot_robot")]
+script = ExtResource("2_8mo4m")
+godot_robot = NodePath("../CPRMover6")
+
+[node name="ArmController" type="Node" parent="." unique_id=259277607 node_paths=PackedStringArray("godot_robot")]
+script = ExtResource("3_gr7he")
+godot_robot = NodePath("../CPRMover6")
+
+[node name="control(temp_demo)" type="Node" parent="." unique_id=604046002]
+script = ExtResource("4_bjiqm")
