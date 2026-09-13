@@ -24,16 +24,16 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cn6ah"]
 height = 1.0
 
-[sub_resource type="GDScript" id="GDScript_cuaai"]
+[sub_resource type="GDScript" id="GDScript_qb2dd"]
 
-[sub_resource type="Resource" id="Resource_r5h8m"]
-script = SubResource("GDScript_cuaai")
+[sub_resource type="Resource" id="Resource_k2aci"]
+script = SubResource("GDScript_qb2dd")
 lower = 0.0
 upper = 0.0
 effort = 100.0
 velocity = 30.0
 
-[sub_resource type="Resource" id="Resource_7l0sk"]
+[sub_resource type="Resource" id="Resource_0baai"]
 script = ExtResource("6_k2aci")
 name = "joint1"
 type = "continuous"
@@ -42,16 +42,16 @@ child = "link1"
 origin_xyz = Vector3(0, 0.13, 0)
 origin_rpy = Vector3(0, 0, 0)
 axis = Vector3(0, -1, 0)
-limit = SubResource("Resource_r5h8m")
+limit = SubResource("Resource_k2aci")
 
-[sub_resource type="Resource" id="Resource_m7mem"]
-script = SubResource("GDScript_cuaai")
+[sub_resource type="Resource" id="Resource_f6xbj"]
+script = SubResource("GDScript_qb2dd")
 lower = 0.0
 upper = 0.0
 effort = 100.0
 velocity = 30.0
 
-[sub_resource type="Resource" id="Resource_k25cy"]
+[sub_resource type="Resource" id="Resource_va547"]
 script = ExtResource("6_k2aci")
 name = "joint2"
 type = "continuous"
@@ -60,16 +60,16 @@ child = "link2"
 origin_xyz = Vector3(0, 0.0625, 0)
 origin_rpy = Vector3(0, 0, 0)
 axis = Vector3(0, 0, -1)
-limit = SubResource("Resource_m7mem")
+limit = SubResource("Resource_f6xbj")
 
-[sub_resource type="Resource" id="Resource_ejva2"]
-script = SubResource("GDScript_cuaai")
+[sub_resource type="Resource" id="Resource_effes"]
+script = SubResource("GDScript_qb2dd")
 lower = 0.0
 upper = 0.0
 effort = 100.0
 velocity = 30.0
 
-[sub_resource type="Resource" id="Resource_qb2dd"]
+[sub_resource type="Resource" id="Resource_8piux"]
 script = ExtResource("6_k2aci")
 name = "joint3"
 type = "continuous"
@@ -78,16 +78,16 @@ child = "link3"
 origin_xyz = Vector3(0, 0.19, 0)
 origin_rpy = Vector3(-4.37114e-08, -4.37114e-08, -1.5708)
 axis = Vector3(0, 0, -1)
-limit = SubResource("Resource_ejva2")
+limit = SubResource("Resource_effes")
 
-[sub_resource type="Resource" id="Resource_1oser"]
-script = SubResource("GDScript_cuaai")
+[sub_resource type="Resource" id="Resource_th603"]
+script = SubResource("GDScript_qb2dd")
 lower = 0.0
 upper = 0.0
 effort = 100.0
 velocity = 30.0
 
-[sub_resource type="Resource" id="Resource_yfb86"]
+[sub_resource type="Resource" id="Resource_cuaai"]
 script = ExtResource("6_k2aci")
 name = "joint4"
 type = "continuous"
@@ -96,16 +96,16 @@ child = "link4"
 origin_xyz = Vector3(-0.06, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
 axis = Vector3(0, 1, 0)
-limit = SubResource("Resource_1oser")
+limit = SubResource("Resource_th603")
 
-[sub_resource type="Resource" id="Resource_hrn5k"]
-script = SubResource("GDScript_cuaai")
+[sub_resource type="Resource" id="Resource_r5h8m"]
+script = SubResource("GDScript_qb2dd")
 lower = 0.0
 upper = 0.0
 effort = 100.0
 velocity = 30.0
 
-[sub_resource type="Resource" id="Resource_8ddqe"]
+[sub_resource type="Resource" id="Resource_7l0sk"]
 script = ExtResource("6_k2aci")
 name = "joint5"
 type = "continuous"
@@ -114,16 +114,16 @@ child = "link5"
 origin_xyz = Vector3(0, 0.29, 0)
 origin_rpy = Vector3(0, 0, 0)
 axis = Vector3(0, 0, -1)
-limit = SubResource("Resource_hrn5k")
+limit = SubResource("Resource_r5h8m")
 
-[sub_resource type="Resource" id="Resource_sx1ag"]
-script = SubResource("GDScript_cuaai")
+[sub_resource type="Resource" id="Resource_m7mem"]
+script = SubResource("GDScript_qb2dd")
 lower = 0.0
 upper = 0.0
 effort = 100.0
 velocity = 30.0
 
-[sub_resource type="Resource" id="Resource_fhpto"]
+[sub_resource type="Resource" id="Resource_k25cy"]
 script = ExtResource("6_k2aci")
 name = "joint6"
 type = "continuous"
@@ -132,9 +132,9 @@ child = "link6"
 origin_xyz = Vector3(0, 0.055, 0)
 origin_rpy = Vector3(0, 0, 0)
 axis = Vector3(0, 1, 0)
-limit = SubResource("Resource_sx1ag")
+limit = SubResource("Resource_m7mem")
 
-[sub_resource type="Resource" id="Resource_8wdww"]
+[sub_resource type="Resource" id="Resource_ejva2"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -145,7 +145,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint0Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_kigti"]
+[sub_resource type="Resource" id="Resource_qb2dd"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -159,13 +159,13 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint0.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_j3b1v"]
+[sub_resource type="Resource" id="Resource_1oser"]
 script = ExtResource("7_f6xbj")
 name = "base_link"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_kigti")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_8wdww")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_qb2dd")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_ejva2")])
 
-[sub_resource type="Resource" id="Resource_jga7c"]
+[sub_resource type="Resource" id="Resource_yfb86"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -176,7 +176,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint1Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_n0jpv"]
+[sub_resource type="Resource" id="Resource_hrn5k"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -190,13 +190,13 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint1.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_ddqrg"]
+[sub_resource type="Resource" id="Resource_8ddqe"]
 script = ExtResource("7_f6xbj")
 name = "link1"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_n0jpv")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_jga7c")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_hrn5k")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_yfb86")])
 
-[sub_resource type="Resource" id="Resource_aoe7m"]
+[sub_resource type="Resource" id="Resource_sx1ag"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -207,7 +207,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint2Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_xuocl"]
+[sub_resource type="Resource" id="Resource_fhpto"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -221,13 +221,13 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint2.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_vminv"]
+[sub_resource type="Resource" id="Resource_8wdww"]
 script = ExtResource("7_f6xbj")
 name = "link2"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_xuocl")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_aoe7m")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_fhpto")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_sx1ag")])
 
-[sub_resource type="Resource" id="Resource_oh6kk"]
+[sub_resource type="Resource" id="Resource_kigti"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -238,7 +238,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint3Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_x8k7r"]
+[sub_resource type="Resource" id="Resource_j3b1v"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -252,13 +252,13 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint3.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_w1l4p"]
+[sub_resource type="Resource" id="Resource_jga7c"]
 script = ExtResource("7_f6xbj")
 name = "link3"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_x8k7r")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_oh6kk")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_j3b1v")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_kigti")])
 
-[sub_resource type="Resource" id="Resource_itdhk"]
+[sub_resource type="Resource" id="Resource_n0jpv"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -269,7 +269,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint4Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_3qlu7"]
+[sub_resource type="Resource" id="Resource_ddqrg"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -283,13 +283,13 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint4.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_2wkdl"]
+[sub_resource type="Resource" id="Resource_aoe7m"]
 script = ExtResource("7_f6xbj")
 name = "link4"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_3qlu7")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_itdhk")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_ddqrg")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_n0jpv")])
 
-[sub_resource type="Resource" id="Resource_nibki"]
+[sub_resource type="Resource" id="Resource_xuocl"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -300,7 +300,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint5Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_3hdby"]
+[sub_resource type="Resource" id="Resource_vminv"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -314,13 +314,13 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint5.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_3ucje"]
+[sub_resource type="Resource" id="Resource_oh6kk"]
 script = ExtResource("7_f6xbj")
 name = "link5"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_3hdby")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_nibki")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_vminv")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_xuocl")])
 
-[sub_resource type="Resource" id="Resource_r83ip"]
+[sub_resource type="Resource" id="Resource_x8k7r"]
 script = ExtResource("8_va547")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -331,7 +331,7 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint6Coll.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_wglgm"]
+[sub_resource type="Resource" id="Resource_w1l4p"]
 script = ExtResource("9_effes")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -345,38 +345,38 @@ length = 0.0
 mesh_path = "package://cpr_robot/robots/CPRMover6/Joint6.dae"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_oqfgn"]
+[sub_resource type="Resource" id="Resource_itdhk"]
 script = ExtResource("7_f6xbj")
 name = "link6"
-visuals = Array[ExtResource("9_effes")]([SubResource("Resource_wglgm")])
-colliders = Array[ExtResource("8_va547")]([SubResource("Resource_r83ip")])
+visuals = Array[ExtResource("9_effes")]([SubResource("Resource_w1l4p")])
+colliders = Array[ExtResource("8_va547")]([SubResource("Resource_x8k7r")])
 
-[sub_resource type="Resource" id="Resource_jk6q2"]
+[sub_resource type="Resource" id="Resource_3qlu7"]
 script = ExtResource("11_th603")
 name = "CPRMover6"
-links = [SubResource("Resource_j3b1v"), SubResource("Resource_ddqrg"), SubResource("Resource_vminv"), SubResource("Resource_w1l4p"), SubResource("Resource_2wkdl"), SubResource("Resource_3ucje"), SubResource("Resource_oqfgn")]
-joints = [SubResource("Resource_7l0sk"), SubResource("Resource_k25cy"), SubResource("Resource_qb2dd"), SubResource("Resource_yfb86"), SubResource("Resource_8ddqe"), SubResource("Resource_fhpto")]
+links = [SubResource("Resource_1oser"), SubResource("Resource_8ddqe"), SubResource("Resource_8wdww"), SubResource("Resource_jga7c"), SubResource("Resource_aoe7m"), SubResource("Resource_oh6kk"), SubResource("Resource_itdhk")]
+joints = [SubResource("Resource_0baai"), SubResource("Resource_va547"), SubResource("Resource_8piux"), SubResource("Resource_cuaai"), SubResource("Resource_7l0sk"), SubResource("Resource_k25cy")]
 materials = {}
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_proep"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2wkdl"]
 points = PackedVector3Array(71.1828, 11.3116, 6.27788, -68.2901, -10.4512, -4.35519, -65.9833, -16.8197, -4.18716, -40.4049, -6.1637, 130.054, -11.0344, 71.3272, 6.27788, 11.1695, -70.895, 6.27788, 53.0693, 10.8022, 127.599, -43.9687, 23.2767, 126.906, -6.26295, -39.9714, 129.612, 62.2608, -23.3667, -4.62238, 48.3193, -18.6568, 126.919, 21.3348, 64.0394, -4.08104, 6.41179, 40.4023, 129.61, -31.0388, -59.7578, 6.27788, -50.9265, -14.6415, 127.749, -68.8064, 17.98, 6.27788, 22.2785, 66.8723, 6.27788, -10.6099, -68.1777, -4.38121, -29.6004, 57.4172, -3.81978, 31.174, -59.7717, 6.27788, 68.9555, -17.5478, 6.27788, 14.8444, -37.8086, 129.493, 44.1131, 23.2742, 126.899, -31.0388, 60.19, 6.27788, 64.5008, 24.6484, 6.27788, -68.8064, -17.5478, 6.27788, -52.9274, 10.8036, 127.608, -14.7081, 38.2395, 129.491, -17.7025, -68.6676, 6.27788, -37.5671, -26.9713, 126.723, 62.2595, 23.7984, -4.62092, -62.1195, 23.7968, -4.6162)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_pm5d0"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_nibki"]
 points = PackedVector3Array(9.19709, 52.7161, 101.775, -16.2507, -77.6252, 21.0034, -8.88673, -11.3395, -129.943, 57.3893, -77.6252, 54.178, -53.5355, -70.393, 71.2498, -56.7695, 51.2608, 50.4868, 57.3893, 51.2608, 50.4868, 9.50651, 10.7471, -129.943, 12.7656, -71.8581, 101.821, -56.7695, -73.9397, 50.4868, -47.0236, 48.2751, 82.5431, -16.2507, 54.9462, 21.0034, 41.2306, 49.1621, 87.5411, -12.5631, 7.0617, -129.943, -12.1528, -71.9444, 101.983, 13.1941, -3.98159, -129.943, 50.8614, -74.099, 75.0504, 46.3377, -77.6252, 35.7451, 24.2345, 54.9462, 24.7176, -49.3943, -77.6252, 39.4132, -19.1999, 52.5291, 97.8855, 9.50651, -11.3395, -129.943, -39.8961, -74.2839, 85.8006, 16.8705, -77.6252, 21.0034, 51.6045, 48.8019, 76.3314, -8.88673, 10.7471, -129.943, 57.3893, -73.9397, 50.4868, 40.5114, -74.2769, 85.7898, -12.5631, -7.66701, -129.943, -27.3023, 54.9462, 28.3627, -53.5355, 47.714, 71.2498, -12.1438, 49.2218, 101.901)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_e84t2"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_3hdby"]
 points = PackedVector3Array(8.48618, 83.4574, 221.832, -7.80614, 83.4574, -31.0761, -42.6556, 53.346, 207.133, 13.2353, -79.9337, 198.567, 43.3356, 49.0456, -12.0943, -42.6556, 49.0456, -16.404, 43.3356, 53.346, 202.823, -12.5553, -79.9337, 198.567, 32.6747, 74.6451, -13.7401, -32.2927, 75.2972, 205.502, 13.2353, 49.0456, -42.2081, 13.2353, 53.346, 232.964, 13.2353, -79.9337, -7.81158, -12.5553, -79.9337, -7.81158, -36.2431, 70.9773, -14.354, -16.8565, 53.346, 232.964, -16.8565, 49.0456, -42.2081, 36.9709, 71.0648, 205.253, -19.7772, 82.3649, 216.062, 20.2228, 81.4506, -23.9001, 34.7331, 49.0456, -29.306, 26.1306, 53.346, 228.654, -19.7772, 82.3649, -25.3066, 40.1889, 65.6703, -4.22866, 20.2228, 81.4506, 214.656, -25.4506, 49.0456, -37.8984, -38.3543, 53.346, 215.752, -39.4967, 65.6515, 198.922, 8.48618, 83.4574, -31.0761, 26.1306, 49.0456, -37.8984, 34.7331, 53.346, 220.062, -39.4339, 65.5542, -8.02814)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2eyyk"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_3ucje"]
 points = PackedVector3Array(40.7021, -69.6983, 6.75765, -81.4985, -46.416, -54.537, -78.9699, -49.9922, -54.0076, -81.3937, -46.3551, 60.1057, 38.9113, 52.2024, -10.9424, -6.44037, 50.0171, 53.8469, -79.0228, 20.5666, -54.0588, 7.36322, -71.7849, -54.2125, 7.2068, -71.4385, 53.6908, 5.49085, 50.4108, -54.4307, -81.3937, 16.8296, 60.1057, 22.8029, 49.7288, 43.8449, -41.2292, 50.4662, 0.92002, -40.7305, -68.7608, -8.37498, 26.8591, -71.5498, -38.3145, -36.4866, 23.8568, 61.9842, 22.9496, 49.9354, -44.2048, 22.8362, -71.3953, 43.8766, 38.5566, 47.9118, 14.5704, -75.3511, -52.1867, 59.9921, -36.4866, -53.6416, 61.9842, -36.4866, 23.8568, -56.3174, -24.0557, 51.44, -34.1206, 38.6739, -71.6027, -14.8072, -14.2924, -73.5615, 8.71176, 11.3529, 50.273, 52.0925, -26.0037, 51.4401, 32.0123, -14.3306, -71.1884, -51.7076, -81.5625, 16.9058, -54.5969, -76.5918, 22.2596, 59.259, -14.3856, -70.6201, 51.076, -36.4866, -53.6416, -56.3174)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_t4msm"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_r83ip"]
 points = PackedVector3Array(11.1445, 23.1945, 243.899, -12.1378, -23.3654, 243.899, -6.31721, -11.7232, -61.6881, -15.0495, 23.1945, 246.831, 12.8346, -21.4112, 278.734, 11.1445, 5.73113, -61.6881, -12.1378, 5.73113, -61.6881, -15.0495, -23.3654, 290.426, 14.0562, 14.4651, 293.393, -6.31721, 11.5523, -61.6881, 14.0562, -23.3654, 246.831, 5.32392, -11.7232, -61.6881, -8.82679, 22.1297, 290.968, -12.1378, -5.90202, -61.6881, 14.0562, 23.1945, 246.831, 5.32392, 11.5523, -61.6881, 11.1445, -5.90202, -61.6881, -15.0495, 8.63942, 293.393, -15.0495, -23.3654, 246.831, 10.7079, 22.3215, 289.633, 7.61228, -21.7107, 286.395, -8.99403, -2.91643, 294.426, 14.0562, 11.5523, 235.137, -15.0495, 8.63942, 235.137, -3.4055, 23.1945, 241.002, -13.5821, 20.8471, 275.785, 11.1445, -23.3654, 243.899, 14.0562, -8.81031, 235.137, 7.8951, 22.294, 292.242, -15.0495, -8.81031, 235.137, -12.1378, 23.1945, 243.899, 2.41221, 23.1945, 241.002)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_x0ta8"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wglgm"]
 points = PackedVector3Array(-7.78726, 23.3154, -7.0204, 37.05, 12.5085, 48.7916, -10.7844, -24.2937, 47.9093, 7.48776, -23.9697, -8.01438, -10.7619, 23.5557, 48.8043, 37.7107, -13.5797, 17.4935, 8.43493, 24.2014, -6.12096, 20.4185, -23.9857, 48.4587, -10.4676, -23.9769, -1.50869, 37.7107, 13.8066, 17.4935, 20.4008, 23.2127, 48.388, 36.9898, -13.1916, 48.7175, -3.84945, -21.1378, -10.8427, -10.6305, 23.4243, -1.65273, 21.6521, 24.2014, 17.4935, 0.370528, 23.3824, -9.83481, 9.37729, -24.9169, 4.27508, 22.0988, -22.7304, 26.5347, -10.6453, -16.8311, 48.6609, 2.76152, -21.1378, -10.8427, -8.74251, -23.1668, -6.16255, 36.7635, -14.522, 17.4935, 6.54059, -21.1378, -8.94926, 5.78124, 23.6063, 48.8724, -5.10118, 23.3782, -8.91468, 10.4131, -24.1472, 48.6575, 4.11204, 23.1524, -8.64539, 8.43493, -23.9697, -7.06176, 24.7832, -20.9421, 21.164, -3.35178, -23.2785, -9.95793, -9.70015, 23.4106, -4.38361, 32.0421, 17.5856, 17.4935)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ej5rq"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_oqfgn"]
 points = PackedVector3Array(-21.9664, -19.622, -6.92028, -21.2323, -21.089, -6.92028, -20.6411, -18.3443, -0.523966, -19.7682, 22.8148, 0.397398, 16.2705, -21.8769, -0.42169, 17.2024, 20.1965, -6.0288, 19.0126, -19.622, -6.92028, -21.9664, 18.423, -6.92028, 19.0126, -13.7679, 0.397398, 15.3504, 23.5483, 0.397398, -17.8736, 22.9491, -6.11334, -21.9664, 2.32299, 0.397398, 19.0126, 3.05648, -6.92028, 15.3504, -23.2849, -6.92028, -17.7832, -21.6115, -0.543814, 14.3861, 22.2064, -6.02051, 19.0126, 19.1565, 0.397398, -21.9664, 20.6189, 0.397398, -18.4425, -22.4906, -3.96798, 14.7858, -22.4992, -0.432857, -18.3041, 23.5483, 0.397398, 17.963, 18.8735, -6.03829, 18.3231, -18.9573, -0.433146, -20.7625, 20.8477, -6.11862, 18.2786, 21.3524, 0.397398, -17.5741, 17.6896, -6.92028, 15.3504, -13.039, 0.397398, 18.2786, -21.089, -6.92028, -19.7682, 0.860604, 0.397398, 16.8145, 22.8148, 0.397398, 17.7079, -20.476, -0.419205, -19.8909, -19.6481, -0.533393)
 
 [node name="Projectrout" type="Node3D"]
@@ -417,16 +417,16 @@ ros_bridge = NodePath("../ROS2")
 
 [node name="CPRMover6" type="Node3D" parent="ImportRobot"]
 script = ExtResource("5_k2aci")
-urdf = SubResource("Resource_jk6q2")
+urdf = SubResource("Resource_3qlu7")
 
 [node name="base_link" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 freeze = true
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_j3b1v")
+link = SubResource("Resource_1oser")
 
 [node name="base_link_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/base_link"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_proep")
+shape = SubResource("ConvexPolygonShape3D_2wkdl")
 
 [node name="base_link_mesh" type="Node3D" parent="ImportRobot/CPRMover6/base_link" instance=ExtResource("13_k2aci")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -434,11 +434,11 @@ transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114
 [node name="joint1" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_ddqrg")
+link = SubResource("Resource_8ddqe")
 
 [node name="link1_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint1"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_pm5d0")
+shape = SubResource("ConvexPolygonShape3D_nibki")
 
 [node name="link1_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint1" instance=ExtResource("14_0baai")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -446,11 +446,11 @@ transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114
 [node name="joint2" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1925, 0)
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_vminv")
+link = SubResource("Resource_8wdww")
 
 [node name="link2_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint2"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_e84t2")
+shape = SubResource("ConvexPolygonShape3D_3hdby")
 
 [node name="link2_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint2" instance=ExtResource("15_f6xbj")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -458,11 +458,11 @@ transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114
 [node name="joint3" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 0, 0.3825, 0)
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_w1l4p")
+link = SubResource("Resource_jga7c")
 
 [node name="link3_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint3"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_2eyyk")
+shape = SubResource("ConvexPolygonShape3D_3ucje")
 
 [node name="link3_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint3" instance=ExtResource("16_va547")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -470,11 +470,11 @@ transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114
 [node name="joint4" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 2.62268e-09, 0.4425, -2.62268e-09)
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_2wkdl")
+link = SubResource("Resource_aoe7m")
 
 [node name="link4_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint4"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_t4msm")
+shape = SubResource("ConvexPolygonShape3D_r83ip")
 
 [node name="link4_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint4" instance=ExtResource("17_effes")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -482,11 +482,11 @@ transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114
 [node name="joint5" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 0.29, 0.4425, 1.00536e-08)
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_3ucje")
+link = SubResource("Resource_oh6kk")
 
 [node name="link5_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint5"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_x0ta8")
+shape = SubResource("ConvexPolygonShape3D_wglgm")
 
 [node name="link5_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint5" instance=ExtResource("18_8piux")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -494,11 +494,11 @@ transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114
 [node name="joint6" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 0.345, 0.4425, 1.24577e-08)
 script = ExtResource("12_cuaai")
-link = SubResource("Resource_oqfgn")
+link = SubResource("Resource_itdhk")
 
 [node name="link6_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint6"]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_ej5rq")
+shape = SubResource("ConvexPolygonShape3D_oqfgn")
 
 [node name="link6_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint6" instance=ExtResource("19_th603")]
 transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
@@ -511,7 +511,7 @@ angular_limit_z/lower_angle = 1.0
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 100.0
 script = ExtResource("19_50kos")
-joint = SubResource("Resource_7l0sk")
+joint = SubResource("Resource_0baai")
 
 [node name="joint_joint2" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.1925, 0)
@@ -521,7 +521,7 @@ angular_limit_z/lower_angle = 1.0
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 100.0
 script = ExtResource("19_50kos")
-joint = SubResource("Resource_k25cy")
+joint = SubResource("Resource_va547")
 
 [node name="joint_joint3" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(4.37114e-08, 1, 4.37114e-08, 1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 0, 0.3825, 0)
@@ -531,7 +531,7 @@ angular_limit_z/lower_angle = 1.0
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 100.0
 script = ExtResource("19_50kos")
-joint = SubResource("Resource_qb2dd")
+joint = SubResource("Resource_8piux")
 
 [node name="joint_joint4" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -1, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 4.37114e-08, 2.62268e-09, 0.4425, -2.62268e-09)
@@ -541,7 +541,7 @@ angular_limit_z/lower_angle = 1.0
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 100.0
 script = ExtResource("19_50kos")
-joint = SubResource("Resource_yfb86")
+joint = SubResource("Resource_cuaai")
 
 [node name="joint_joint5" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(4.37114e-08, 1, 4.37114e-08, 1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 0.29, 0.4425, 1.00536e-08)
@@ -551,7 +551,7 @@ angular_limit_z/lower_angle = 1.0
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 100.0
 script = ExtResource("19_50kos")
-joint = SubResource("Resource_8ddqe")
+joint = SubResource("Resource_7l0sk")
 
 [node name="joint_joint6" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -1, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 4.37114e-08, 0.345, 0.4425, 1.24577e-08)
@@ -561,4 +561,4 @@ angular_limit_z/lower_angle = 1.0
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 100.0
 script = ExtResource("19_50kos")
-joint = SubResource("Resource_fhpto")
+joint = SubResource("Resource_k25cy")
