@@ -15,6 +15,7 @@ static func _clean_path(
 static func load_resource(
 		path: String, opts: Dictionary, source_path: String) -> Resource:
 	path = _clean_path(path, opts, source_path)
+	opts["_resolved_mesh_path"] = path
 	if resource_cache.has(path): return resource_cache[path]
 	var res = load(path)
 	resource_cache[path] = res
@@ -46,14 +47,34 @@ static func get_collision_callable(type: int) -> Callable:
 
 # --- Orientation Helper ---
 
+static func _get_dae_up_axis(dae_path: String) -> String:
+	if dae_path.is_empty() or not FileAccess.file_exists(dae_path):
+		return "Y_UP"
+	var f = FileAccess.open(dae_path, FileAccess.READ)
+	if f == null:
+		return "Y_UP"
+	var chunk = f.get_buffer(mini(f.get_length(), 2048)).get_string_from_utf8()
+	f.close()
+	var start = chunk.find("<up_axis>")
+	if start == -1:
+		return "Y_UP"
+	start += "<up_axis>".length()
+	var end = chunk.find("</up_axis>", start)
+	if end == -1:
+		return "Y_UP"
+	return chunk.substr(start, end - start).strip_edges()
+
 static func _get_mesh_local_fix(mesh_path: String, opts: Dictionary) -> Transform3D:
 	var local_fix := Transform3D.IDENTITY
 	if opts.get('rotate_x', null) != null:
 		return local_fix.rotated(Vector3.RIGHT, opts['rotate_x'])
 	
 	var ext = mesh_path.get_extension().to_lower()
-	if ext == "stl" or ext == "obj" or ext == "dae":
+	if ext == "stl" or ext == "obj":
 		local_fix = local_fix.rotated(Vector3.RIGHT, -PI / 2.0)
+	elif ext == "dae":
+		if _get_dae_up_axis(opts.get("_resolved_mesh_path", "")) == "Y_UP":
+			local_fix = local_fix.rotated(Vector3.RIGHT, -PI / 2.0)
 		
 	return local_fix
 # --- Visual Generators ---
