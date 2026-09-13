@@ -26,7 +26,7 @@ func reinitialize() -> void:
 
 	var link_name := end_link_name
 	if link_name.is_empty():
-		link_name = godot_robot.get_deepest_leaf_link_name()
+		link_name = _find_deepest_real_leaf_link()
 
 	var node: Node3D = godot_robot.links.get(link_name)
 	_end_body = node as RigidBody3D
@@ -35,6 +35,51 @@ func reinitialize() -> void:
 		return
 
 	_start_transform = _end_body.global_transform
+
+## GodotRobot.get_deepest_leaf_link_name() decides "leaf" status using every
+## joint in the URDF, even if the child link was never actually instantiated
+## (URDFs often have zero-geometry "virtual" frames - e.g. UR5e's ft_frame,
+## flange, tool0 - which GodotRobot silently skips when building `links`).
+## That makes every *real* link look like it "has a child" and leaves the
+## leaf search empty. This re-does the leaf/depth search using only link
+## names that actually exist as nodes in godot_robot.links.
+func _find_deepest_real_leaf_link() -> String:
+	if not godot_robot or not godot_robot.urdf:
+		return ""
+
+	var real_links: Dictionary = godot_robot.links
+	# child -> parent, restricted to joints where BOTH ends are real nodes
+	var parent_of: Dictionary = {}
+	var has_real_child: Dictionary = {}
+	for joint in godot_robot.urdf.joints:
+		if real_links.has(joint.parent) and real_links.has(joint.child):
+			parent_of[joint.child] = joint.parent
+			has_real_child[joint.parent] = true
+
+	var leaves: Array = []
+	for link_name in real_links.keys():
+		if not has_real_child.has(link_name):
+			leaves.append(link_name)
+
+	var depth_cache: Dictionary = {}
+	var deepest_name := ""
+	var deepest_depth := -1
+	for leaf in leaves:
+		var depth := _real_link_depth(leaf, parent_of, depth_cache)
+		if depth > deepest_depth:
+			deepest_depth = depth
+			deepest_name = leaf
+	return deepest_name
+
+func _real_link_depth(link_name: String, parent_of: Dictionary, cache: Dictionary) -> int:
+	if cache.has(link_name):
+		return cache[link_name]
+	if not parent_of.has(link_name):
+		cache[link_name] = 0
+		return 0
+	var depth: int = 1 + _real_link_depth(parent_of[link_name], parent_of, cache)
+	cache[link_name] = depth
+	return depth
 
 func _physics_process(delta: float) -> void:
 	if not _end_body:
