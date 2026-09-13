@@ -52,11 +52,10 @@ static func _get_mesh_local_fix(mesh_path: String, opts: Dictionary) -> Transfor
 		return local_fix.rotated(Vector3.RIGHT, opts['rotate_x'])
 	
 	var ext = mesh_path.get_extension().to_lower()
-	if ext == "stl" or ext == "obj" or mesh_path.contains("upperarm") or mesh_path.contains("forearm"):
+	if ext == "stl" or ext == "obj" or ext == "dae":
 		local_fix = local_fix.rotated(Vector3.RIGHT, -PI / 2.0)
 		
 	return local_fix
-
 # --- Visual Generators ---
 
 static func create_box_visual(

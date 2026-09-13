@@ -23,10 +23,10 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cn6ah"]
 height = 1.0
 
-[sub_resource type="GDScript" id="GDScript_qb2dd"]
+[sub_resource type="GDScript" id="GDScript_50kos"]
 
 [sub_resource type="Resource" id="Resource_50kos"]
-script = SubResource("GDScript_qb2dd")
+script = SubResource("GDScript_50kos")
 lower = 0.0
 upper = 0.0
 effort = 100.0
@@ -44,7 +44,7 @@ axis = Vector3(0, -1, 0)
 limit = SubResource("Resource_50kos")
 
 [sub_resource type="Resource" id="Resource_0baai"]
-script = SubResource("GDScript_qb2dd")
+script = SubResource("GDScript_50kos")
 lower = 0.0
 upper = 0.0
 effort = 100.0
@@ -62,7 +62,7 @@ axis = Vector3(0, 0, -1)
 limit = SubResource("Resource_0baai")
 
 [sub_resource type="Resource" id="Resource_va547"]
-script = SubResource("GDScript_qb2dd")
+script = SubResource("GDScript_50kos")
 lower = 0.0
 upper = 0.0
 effort = 100.0
@@ -80,7 +80,7 @@ axis = Vector3(0, 0, -1)
 limit = SubResource("Resource_va547")
 
 [sub_resource type="Resource" id="Resource_8piux"]
-script = SubResource("GDScript_qb2dd")
+script = SubResource("GDScript_50kos")
 lower = 0.0
 upper = 0.0
 effort = 100.0
@@ -98,7 +98,7 @@ axis = Vector3(0, 1, 0)
 limit = SubResource("Resource_8piux")
 
 [sub_resource type="Resource" id="Resource_cuaai"]
-script = SubResource("GDScript_qb2dd")
+script = SubResource("GDScript_50kos")
 lower = 0.0
 upper = 0.0
 effort = 100.0
@@ -116,7 +116,7 @@ axis = Vector3(0, 0, -1)
 limit = SubResource("Resource_cuaai")
 
 [sub_resource type="Resource" id="Resource_7l0sk"]
-script = SubResource("GDScript_qb2dd")
+script = SubResource("GDScript_50kos")
 lower = 0.0
 upper = 0.0
 effort = 100.0
@@ -423,11 +423,11 @@ script = ExtResource("12_cuaai")
 link = SubResource("Resource_qb2dd")
 
 [node name="base_link_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/base_link"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_3qlu7")
 
 [node name="base_link_mesh" type="Node3D" parent="ImportRobot/CPRMover6/base_link" instance=ExtResource("11_iuyqn")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint1" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
@@ -435,11 +435,11 @@ script = ExtResource("12_cuaai")
 link = SubResource("Resource_hrn5k")
 
 [node name="link1_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint1"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_2wkdl")
 
 [node name="link1_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint1" instance=ExtResource("12_50kos")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint2" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1925, 0)
@@ -447,59 +447,59 @@ script = ExtResource("12_cuaai")
 link = SubResource("Resource_fhpto")
 
 [node name="link2_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint2"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_nibki")
 
 [node name="link2_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint2" instance=ExtResource("13_k2aci")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint3" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 0, 0.3825, 0)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 0, 0.3825, 0)
 script = ExtResource("12_cuaai")
 link = SubResource("Resource_j3b1v")
 
 [node name="link3_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint3"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_3hdby")
 
 [node name="link3_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint3" instance=ExtResource("14_0baai")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint4" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 2.62268e-09, 0.4425, -2.62268e-09)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 2.62268e-09, 0.4425, -2.62268e-09)
 script = ExtResource("12_cuaai")
 link = SubResource("Resource_ddqrg")
 
 [node name="link4_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint4"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_3ucje")
 
 [node name="link4_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint4" instance=ExtResource("15_f6xbj")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint5" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 0.29, 0.4425, -1.5299e-08)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 0.29, 0.4425, 1.00536e-08)
 script = ExtResource("12_cuaai")
 link = SubResource("Resource_vminv")
 
 [node name="link5_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint5"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_r83ip")
 
 [node name="link5_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint5" instance=ExtResource("16_va547")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint6" type="RigidBody3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, 0.345, 0.4425, -1.77031e-08)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, 4.37114e-08, 4.37114e-08, 4.37114e-08, 1, 0.345, 0.4425, 1.24577e-08)
 script = ExtResource("12_cuaai")
 link = SubResource("Resource_w1l4p")
 
 [node name="link6_collision" type="CollisionShape3D" parent="ImportRobot/CPRMover6/joint6"]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_wglgm")
 
 [node name="link6_mesh" type="Node3D" parent="ImportRobot/CPRMover6/joint6" instance=ExtResource("17_effes")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
 
 [node name="joint_joint1" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.13, 0)
@@ -522,7 +522,7 @@ script = ExtResource("19_50kos")
 joint = SubResource("Resource_f6xbj")
 
 [node name="joint_joint3" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(4.37114e-08, 1, -4.37114e-08, 1, -4.37114e-08, -4.37114e-08, -4.37114e-08, -4.37114e-08, -1, 0, 0.3825, 0)
+transform = Transform3D(4.37114e-08, 1, 4.37114e-08, 1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 0, 0.3825, 0)
 node_a = NodePath("../joint2")
 node_b = NodePath("../joint3")
 angular_limit_z/lower_angle = 1.0
@@ -532,7 +532,7 @@ script = ExtResource("19_50kos")
 joint = SubResource("Resource_effes")
 
 [node name="joint_joint4" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(-4.37114e-08, -4.37114e-08, 1, -1, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, -4.37114e-08, 2.62268e-09, 0.4425, -2.62268e-09)
+transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -1, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 4.37114e-08, 2.62268e-09, 0.4425, -2.62268e-09)
 node_a = NodePath("../joint3")
 node_b = NodePath("../joint4")
 angular_limit_z/lower_angle = 1.0
@@ -542,7 +542,7 @@ script = ExtResource("19_50kos")
 joint = SubResource("Resource_th603")
 
 [node name="joint_joint5" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(4.37114e-08, 1, -4.37114e-08, 1, -4.37114e-08, -4.37114e-08, -4.37114e-08, -4.37114e-08, -1, 0.29, 0.4425, -1.5299e-08)
+transform = Transform3D(4.37114e-08, 1, 4.37114e-08, 1, -4.37114e-08, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 0.29, 0.4425, 1.00536e-08)
 node_a = NodePath("../joint4")
 node_b = NodePath("../joint5")
 angular_limit_z/lower_angle = 1.0
@@ -552,7 +552,7 @@ script = ExtResource("19_50kos")
 joint = SubResource("Resource_r5h8m")
 
 [node name="joint_joint6" type="Generic6DOFJoint3D" parent="ImportRobot/CPRMover6"]
-transform = Transform3D(-4.37114e-08, -4.37114e-08, 1, -1, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, -4.37114e-08, 0.345, 0.4425, -1.77031e-08)
+transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -1, -4.37114e-08, -4.37114e-08, 4.37114e-08, -1, 4.37114e-08, 0.345, 0.4425, 1.24577e-08)
 node_a = NodePath("../joint5")
 node_b = NodePath("../joint6")
 angular_limit_z/lower_angle = 1.0

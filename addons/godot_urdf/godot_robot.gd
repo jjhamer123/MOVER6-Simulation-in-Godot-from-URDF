@@ -196,9 +196,5 @@ func create_godot_joint(joint: Object, owner: Node3D) -> void:
 
 
 func _get_corrected_joint_transform(joint: Object) -> Transform3D:
-	# 1. Parse URDF RPY using intrinsic ZYX order (Yaw -> Pitch -> Roll)
-	# URDF standards map Roll-Pitch-Yaw to ZYX intrinsic Euler rotations.
-	var local_basis := Basis.from_euler(joint.origin_rpy, EULER_ORDER_ZYX)
-
-	# 2. Keep joint.origin_xyz 100% untouched as raw translation
+	var local_basis := Basis.from_euler(joint.origin_rpy)  # default order (YXZ), matches parse_rpy's encoding
 	return Transform3D(local_basis, joint.origin_xyz)
