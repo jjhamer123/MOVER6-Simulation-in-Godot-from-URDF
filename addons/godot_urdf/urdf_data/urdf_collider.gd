@@ -13,5 +13,6 @@ extends Resource
 @export var length: float
 
 @export var mesh_path: String
+@export var mesh_scale: Vector3 = Vector3.ONE
 
 enum Type {BOX, MESH, CYLINDER, SPHERE}

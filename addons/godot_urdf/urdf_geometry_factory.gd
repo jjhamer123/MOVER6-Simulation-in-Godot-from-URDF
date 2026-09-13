@@ -44,17 +44,28 @@ static func get_collision_callable(type: int) -> Callable:
 			return create_mesh_resource_collision
 	return Callable()
 
+# --- Orientation Helper ---
 
-# Visual
+static func _get_mesh_local_fix(mesh_path: String, opts: Dictionary) -> Transform3D:
+	var local_fix := Transform3D.IDENTITY
+	if opts.get('rotate_x', null) != null:
+		return local_fix.rotated(Vector3.RIGHT, opts['rotate_x'])
+	
+	var ext = mesh_path.get_extension().to_lower()
+	if ext == "stl" or ext == "obj" or mesh_path.contains("upperarm") or mesh_path.contains("forearm"):
+		local_fix = local_fix.rotated(Vector3.RIGHT, -PI / 2.0)
+		
+	return local_fix
+
+# --- Visual Generators ---
+
 static func create_box_visual(
 		parent: Node3D, owner: Node, data: URDFVisual,
 		_opts: Dictionary, _path: String, material: BaseMaterial3D):
 	var mesh_inst = MeshInstance3D.new()
 	mesh_inst.mesh = BoxMesh.new()
 	mesh_inst.mesh.size = data.size
-	_finalize(
-		mesh_inst, parent, owner, material,
-		data.origin_xyz, data.origin_rpy)
+	_finalize(mesh_inst, parent, owner, material, data.origin_xyz, data.origin_rpy)
 
 static func create_cylinder_visual(
 		parent: Node3D, owner: Node, data: URDFVisual,
@@ -65,9 +76,9 @@ static func create_cylinder_visual(
 	cm.top_radius = data.radius
 	cm.bottom_radius = data.radius
 	mesh_inst.mesh = cm
-	_finalize(
-		mesh_inst, parent, owner, material,
-		data.origin_xyz, data.origin_rpy)
+	
+	var local_fix = Transform3D.IDENTITY.rotated(Vector3.RIGHT, PI / 2.0)
+	_finalize_with_local_fix(mesh_inst, parent, owner, material, data.origin_xyz, data.origin_rpy, local_fix)
 
 static func create_sphere_visual(
 		parent: Node3D, owner: Node, data: URDFVisual,
@@ -75,56 +86,39 @@ static func create_sphere_visual(
 	var mesh_inst = MeshInstance3D.new()
 	var sphere = SphereMesh.new()
 	sphere.radius = data.radius
-	sphere.height = data.radius * 2
+	sphere.height = data.radius * 2.0
 	mesh_inst.mesh = sphere
-	_finalize(
-		mesh_inst, parent, owner, material,
-		data.origin_xyz, data.origin_rpy)
+	_finalize(mesh_inst, parent, owner, material, data.origin_xyz, data.origin_rpy)
 
 static func create_mesh_resource_visual(
 		parent: Node3D, owner: Node, data: URDFVisual,
 		opts: Dictionary, source_path: String, material: BaseMaterial3D):
 	var resource = load_resource(data.mesh_path, opts, source_path)
-	var instance
+	var instance: Node3D
 	if resource is PackedScene:
 		instance = resource.instantiate()
-		_finalize(
-			instance, parent, owner, material,
-			data.origin_xyz, data.origin_rpy)
 	elif resource is Mesh:
-		instance = MeshInstance3D.new()
-		instance.mesh = resource
-		_finalize(
-			instance, parent, owner, material,
-			data.origin_xyz, data.origin_rpy)
+		var mesh_inst = MeshInstance3D.new()
+		mesh_inst.mesh = resource
+		instance = mesh_inst
 	else:
-		push_error(
-			"Error loading " + data.mesh_path +
-			" - Unknown Resource type:" + type_string(typeof(resource)))
+		push_error("Error loading " + data.mesh_path + " - Unknown Resource type:" + type_string(typeof(resource)))
 		return
 
-	var _scale = 1
-	if opts.has("scale"):
-		_scale = opts.get("scale")
-	instance.scale = Vector3(_scale, _scale, _scale)
+	var local_fix = _get_mesh_local_fix(data.mesh_path, opts)
+	_finalize_with_local_fix(instance, parent, owner, material, data.origin_xyz, data.origin_rpy, local_fix)
 
-	if opts.get('rotate_x', null) != null:
-		# overwrite rotation
-		instance.rotate_x(opts['rotate_x'])
-	else:
-		var ext = data.mesh_path.get_extension().to_lower()
-		if ext == "stl" or ext=="dae":
-			instance.rotate_x(-PI / 2)
+	var global_scale = opts.get("scale", 1.0)
+	instance.scale = data.mesh_scale * global_scale
+	# --- Collision Generators ---
 
-# Collision
 static func create_box_collision(
 		parent: Node3D, owner: Node, data: URDFCollider,
 		_opts: Dictionary, _path: String):
 	var coll = CollisionShape3D.new()
 	coll.shape = BoxShape3D.new()
 	coll.shape.size = data.size
-	_finalize(
-		coll, parent, owner, null, data.origin_xyz, data.origin_rpy)
+	_finalize(coll, parent, owner, null, data.origin_xyz, data.origin_rpy)
 
 static func create_cylinder_collision(
 		parent: Node3D, owner: Node, data: URDFCollider,
@@ -134,8 +128,9 @@ static func create_cylinder_collision(
 	shape.height = data.length
 	shape.radius = data.radius
 	coll.shape = shape
-	_finalize(
-		coll, parent, owner, null, data.origin_xyz, data.origin_rpy)
+	
+	var local_fix = Transform3D.IDENTITY.rotated(Vector3.RIGHT, PI / 2.0)
+	_finalize_with_local_fix(coll, parent, owner, null, data.origin_xyz, data.origin_rpy, local_fix)
 
 static func create_sphere_collision(
 		parent: Node3D, owner: Node, data: URDFCollider,
@@ -144,41 +139,34 @@ static func create_sphere_collision(
 	var shape = SphereShape3D.new()
 	shape.radius = data.radius
 	coll.shape = shape
-	_finalize(
-		coll, parent, owner, null, data.origin_xyz, data.origin_rpy)
+	_finalize(coll, parent, owner, null, data.origin_xyz, data.origin_rpy)
 
 static func create_mesh_resource_collision(
 		parent: Node3D, owner: Node, data: URDFCollider,
 		opts: Dictionary, source_path: String):
+	opts["mesh_path"] = data.mesh_path
+	opts["mesh_scale"] = data.mesh_scale
 	var resource = load_resource(data.mesh_path, opts, source_path)
-	var urdf_transform = URDFUtils.xyz_rpy_to_transform3d(
-		data.origin_xyz, data.origin_rpy)
+	var urdf_transform = URDFUtils.xyz_rpy_to_transform3d(data.origin_xyz, data.origin_rpy)
 	var ext = data.mesh_path.get_extension().to_lower()
 
 	if resource is Mesh:
-		_create_col_shape_from_mesh(
-			resource, urdf_transform, parent, owner, opts, ext)
+		_create_col_shape_from_mesh(resource, urdf_transform, parent, owner, opts, ext)
 	elif resource is PackedScene:
 		var temp_scene = resource.instantiate()
-		_recursive_collision_gen(
-			temp_scene, urdf_transform, parent, owner, opts, ext)
+		_recursive_collision_gen(temp_scene, urdf_transform, parent, owner, opts, ext)
 		temp_scene.queue_free()
-
 
 static func _recursive_collision_gen(
 		node: Node, base_transform: Transform3D, 
 		parent: Node3D, owner: Node,
 		opts: Dictionary, ext: String = ""):
 	if node is MeshInstance3D:
-		# Combine the URDF offset with the mesh's internal local transform
 		var final_transform = base_transform * node.transform
-		_create_col_shape_from_mesh(
-			node.mesh, final_transform, parent, owner, opts, ext)
+		_create_col_shape_from_mesh(node.mesh, final_transform, parent, owner, opts, ext)
 	
 	for child in node.get_children():
-		_recursive_collision_gen(
-			child, base_transform, parent, owner, opts, ext)
-
+		_recursive_collision_gen(child, base_transform, parent, owner, opts, ext)
 
 static func _create_col_shape_from_mesh(
 		mesh: Mesh, tr: Transform3D, 
@@ -191,18 +179,29 @@ static func _create_col_shape_from_mesh(
 		coll.name = parent.name + "_collision"
 		parent.add_child(coll)
 		coll.owner = owner
-		coll.transform = tr
+		
+		var mesh_path = opts.get("mesh_path", "")
+		var local_fix = _get_mesh_local_fix(mesh_path, opts)
+
+		coll.transform = tr * local_fix
+		
+		var mesh_scale: Vector3 = opts.get("mesh_scale", Vector3.ONE)
 		var s = opts.get("scale", 1.0)
-		coll.scale = Vector3(s, s, s)
-		if opts.get('rotate_x', null) != null:
-			coll.rotate_x(opts['rotate_x'])
-		elif ext == "stl" or ext=="dae":
-			coll.rotate_x(-PI / 2)
+		coll.scale = mesh_scale * s
+
+# --- Finalize Helpers ---
 
 static func _finalize(
 		node: Node3D, parent: Node, owner: Node, 
 		material: BaseMaterial3D,
 		xyz: Vector3, rpy: Vector3, num: int = 0):
+	_finalize_with_local_fix(node, parent, owner, material, xyz, rpy, Transform3D.IDENTITY, num)
+
+static func _finalize_with_local_fix(
+		node: Node3D, parent: Node, owner: Node, 
+		material: BaseMaterial3D,
+		xyz: Vector3, rpy: Vector3,
+		local_fix: Transform3D, num: int = 0):
 	parent.add_child(node)
 	if node is CollisionShape3D:
 		node.name = parent.name + "_collision"
@@ -213,4 +212,6 @@ static func _finalize(
 	if num > 0:
 		node.name += "_" + str(num)
 	node.owner = owner
-	node.transform = URDFUtils.xyz_rpy_to_transform3d(xyz, rpy)
+	
+	var urdf_tr = URDFUtils.xyz_rpy_to_transform3d(xyz, rpy)
+	node.transform = urdf_tr * local_fix

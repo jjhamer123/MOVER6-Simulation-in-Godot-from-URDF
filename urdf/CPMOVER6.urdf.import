@@ -1,0 +1,14 @@
+[remap]
+
+importer="godot_urdf"
+type="PackedScene"
+uid="uid://cew2dlafvimys"
+path="res://.godot/imported/CPMOVER6.urdf-52decb1ea0f8661ab05891c5897bcc67.tscn"
+
+[deps]
+
+source_file="res://urdf/CPMOVER6.urdf"
+dest_files=["res://.godot/imported/CPMOVER6.urdf-52decb1ea0f8661ab05891c5897bcc67.tscn"]
+
+[params]
+

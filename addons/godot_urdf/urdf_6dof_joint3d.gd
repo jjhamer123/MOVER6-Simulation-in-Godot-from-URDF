@@ -80,5 +80,5 @@ func update_joint(
 	self.position = child_transform.origin
 	var base_basis = child_transform.basis
 	var urdf_axis = joint.axis.normalized()
-	var axis_rotation = Quaternion(Vector3.FORWARD, urdf_axis)
+	var axis_rotation = Quaternion(Vector3(0, 0, 1), urdf_axis)
 	self.transform.basis = base_basis * Basis(axis_rotation)

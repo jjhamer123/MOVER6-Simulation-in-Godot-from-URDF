@@ -3,18 +3,18 @@ class_name URDFRobot
 extends Resource
 
 @export var name: String
-@export var links: Array[URDFLink] = []
-@export var joints: Array[URDFJoint] = []
-@export var materials: Dictionary[String, Vector4] = {}
+@export var links: Array = []
+@export var joints: Array = []
+@export var materials: Dictionary = {}
 
-func get_child_joints(link_name: String) -> Array[URDFJoint]:
-	var children: Array[URDFJoint] = []
+func get_child_joints(link_name: String) -> Array:
+	var children: Array = []
 	for joint in joints:
 		if joint.parent == link_name:
 			children.append(joint)
 	return children
 	
-func get_link(link_name: String) -> URDFLink:
+func get_link(link_name: String) -> Object:
 	for link in links:
 		if link.name == link_name:
 			return link

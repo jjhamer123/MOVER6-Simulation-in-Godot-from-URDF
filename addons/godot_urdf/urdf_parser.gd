@@ -9,27 +9,36 @@ func as_node3d(
 		parent_node: Node3D,
 		owner_node: Node3D) -> GodotRobot:
 	var start_time = Time.get_ticks_msec()
-	var robot: URDFRobot = parse(source_path)
-	if source_path.begins_with("uid://"):
-		var id = ResourceUID.text_to_id(source_path)
-		source_path = ResourceUID.get_id_path(id)
-	print("parsing " + source_path)
-	if not robot:
-		push_error("No URDFRobot given")
+	
+	var resolved_path := _resolve_path(source_path)
+	if resolved_path.is_empty():
+		push_error("URDFXMLParser: Failed to resolve path -> " + source_path)
 		return null
 
-	# Note that we have one root node that we will use to represent the URDF
-	# tree structure, the robots collision and visual elements
-	# are connected to this as well, NOT to their parents in the URDF
-	# structure!
+	print("parsing " + resolved_path)
+	var robot: Resource = parse(resolved_path)
+	if not robot:
+		push_error("URDFXMLParser: Failed to build URDFRobot data")
+		return null
+
 	var robot_node = GodotRobot.new()
 	robot_node.init_data(
-		robot, parent_node, owner_node, options, source_path)
+		robot, parent_node, owner_node, options, resolved_path)
 
 	var now = Time.get_ticks_msec()
 	var elapsed = (now - start_time) / 1000.0
 	print("Done generating robot, took:", elapsed)
 	return robot_node
+
+func _resolve_path(path: String) -> String:
+	if path.begins_with("uid://"):
+		var id := ResourceUID.text_to_id(path)
+		if id != ResourceUID.INVALID_ID and ResourceUID.has_id(id):
+			return ResourceUID.get_id_path(id)
+		else:
+			push_error("URDFXMLParser: Invalid or unregistered UID -> " + path)
+			return ""
+	return path
 
 func parse(source_path: String) -> URDFRobot:
 	var parser = XMLParser.new()
@@ -41,7 +50,8 @@ func parse(source_path: String) -> URDFRobot:
 	var robot = URDFRobot.new()
 	while parser.read() == OK:
 		var node_type = parser.get_node_type()
-		if node_type == XMLParser.NODE_TEXT: continue # Skip whitespace
+		if node_type == XMLParser.NODE_TEXT:
+			continue
 		
 		if node_type == XMLParser.NODE_ELEMENT:
 			if parser.get_node_name() == "robot":
@@ -50,7 +60,7 @@ func parse(source_path: String) -> URDFRobot:
 				parse_robot_children(parser, robot)
 	return robot
 
-func parse_robot_children(parser: XMLParser, robot: URDFRobot) -> void:
+func parse_robot_children(parser: XMLParser, robot: Object) -> void:
 	while parser.read() == OK:
 		var node_type = parser.get_node_type()
 		if node_type == XMLParser.NODE_TEXT:
@@ -66,6 +76,8 @@ func parse_robot_children(parser: XMLParser, robot: URDFRobot) -> void:
 				"material":
 					var material_name = parser.get_named_attribute_value_safe("name")
 					robot.materials[material_name] = parse_material_color(parser)
+				"transmission", "gazebo", "ros2_control":
+					parser.skip_section()
 				_:
 					push_error("Unsupported tag in robot: ", node_name)
 					parser.skip_section()
@@ -77,6 +89,7 @@ func parse_robot_children(parser: XMLParser, robot: URDFRobot) -> void:
 func get_urdf_joint(parser: XMLParser) -> URDFJoint:
 	var joint = URDFJoint.new()
 	joint.name = parser.get_named_attribute_value_safe("name")
+	joint.axis = Vector3(1, 0, 0)
 	if parser.is_empty():
 		return joint
 	joint.type = parser.get_named_attribute_value_safe("type")
@@ -85,8 +98,8 @@ func get_urdf_joint(parser: XMLParser) -> URDFJoint:
 		var node_type = parser.get_node_type()
 		if node_type == XMLParser.NODE_TEXT:
 			continue
+
 		var node_name = parser.get_node_name()
-		var axis: Vector3 = Vector3(0, 0, 1)
 		if node_type == XMLParser.NODE_ELEMENT:
 			match node_name:
 				"parent":
@@ -94,7 +107,8 @@ func get_urdf_joint(parser: XMLParser) -> URDFJoint:
 				"child":
 					joint.child = parser.get_named_attribute_value_safe("link")
 				"axis":
-					joint.axis = parse_xyz(parser)
+					var parsed_axis := parse_xyz(parser)
+					joint.axis = parsed_axis.normalized() if parsed_axis != Vector3.ZERO else Vector3(1, 0, 0)
 				"origin":
 					joint.origin_xyz = parse_xyz(parser)
 					joint.origin_rpy = parse_rpy(parser)
@@ -102,12 +116,15 @@ func get_urdf_joint(parser: XMLParser) -> URDFJoint:
 					parse_joint_limit(parser, joint)
 				"dynamics":
 					parse_joint_dynamics(parser, joint)
+				"joint_properties", "mimic", "safety_controller", "calibration":
+					parser.skip_section()
 				_:
 					push_error("Unsupported tag in joint: ", node_name)
 					parser.skip_section()
 		elif node_type == XMLParser.NODE_ELEMENT_END:
 			if node_name == "joint":
 				return joint
+
 	return joint
 
 func get_urdf_link(parser: XMLParser) -> URDFLink:
@@ -129,9 +146,11 @@ func get_urdf_link(parser: XMLParser) -> URDFLink:
 					link.colliders.append(get_link_collider(parser))
 				"inertial":
 					link.inertial = get_link_inertial(parser)
+				"gazebo":
+					parser.skip_section()
 				_:
 					parser.skip_section()
-					push_error("Unsupported Tag in Link: ", node_type)
+					push_error("Unsupported Tag in Link: ", node_name)
 		elif node_type == XMLParser.NODE_ELEMENT_END:
 			if node_name == "link":
 				return link
@@ -242,14 +261,14 @@ func _get_named_float(parser: XMLParser, name: String) -> float:
 	var value = parser.get_named_attribute_value_safe(name)
 	return 0.0 if value.is_empty() else float(value)
 
-func parse_joint_limit(parser: XMLParser, joint: URDFJoint) -> void:
+func parse_joint_limit(parser: XMLParser, joint: Object) -> void:
 	joint.limit = URDFJoint.URDFLimit.new()
 	joint.limit.lower = _get_named_float(parser, "lower")
 	joint.limit.upper = _get_named_float(parser, "upper")
 	joint.limit.effort = _get_named_float(parser, "effort")
 	joint.limit.velocity = _get_named_float(parser, "velocity")
 
-func parse_joint_dynamics(parser: XMLParser, joint: URDFJoint) -> void:
+func parse_joint_dynamics(parser: XMLParser, joint: Object) -> void:
 	joint.dynamics = URDFJoint.URDFDynamics.new()
 	joint.dynamics.damping = _get_named_float(parser, "damping")
 	joint.dynamics.friction = _get_named_float(parser, "friction")
@@ -263,42 +282,69 @@ func parse_geometry(
 
 	while parser.read() == OK:
 		var node_type = parser.get_node_type()
-		if node_type == XMLParser.NODE_TEXT: continue
-		
+		if node_type == XMLParser.NODE_TEXT:
+			continue
+
 		if node_type == XMLParser.NODE_ELEMENT:
 			var node_name = parser.get_node_name()
 			match node_name:
 				"box":
-					if is_visual: target_object.type = URDFVisual.Type.BOX
-					else: target_object.type = URDFCollider.Type.BOX
-					
+					if is_visual:
+						target_object.type = URDFVisual.Type.BOX
+					else:
+						target_object.type = URDFCollider.Type.BOX
+
 					var size_split = parser.get_named_attribute_value_safe("size").split(" ", false)
 					if size_split.size() >= 3:
 						target_object.size = Vector3(
 							float(size_split[0]),
-							float(size_split[2]),
-							float(size_split[1])
+							float(size_split[1]),
+							float(size_split[2])
 						)
+
 				"cylinder":
-					if is_visual: target_object.type = URDFVisual.Type.CYLINDER
-					else: target_object.type = URDFCollider.Type.CYLINDER
-					
+					if is_visual:
+						target_object.type = URDFVisual.Type.CYLINDER
+					else:
+						target_object.type = URDFCollider.Type.CYLINDER
+
 					target_object.length = float(parser.get_named_attribute_value_safe("length"))
 					target_object.radius = float(parser.get_named_attribute_value_safe("radius"))
+
 				"sphere":
-					if is_visual: target_object.type = URDFVisual.Type.SPHERE
-					else: target_object.type = URDFCollider.Type.SPHERE
-					
+					if is_visual:
+						target_object.type = URDFVisual.Type.SPHERE
+					else:
+						target_object.type = URDFCollider.Type.SPHERE
+
 					target_object.radius = float(parser.get_named_attribute_value_safe("radius"))
+
 				"mesh":
-					if is_visual: target_object.type = URDFVisual.Type.MESH
-					else: target_object.type = URDFCollider.Type.MESH
+					if is_visual:
+						target_object.type = URDFVisual.Type.MESH
+					else:
+						target_object.type = URDFCollider.Type.MESH
+
+					target_object.mesh_path = parser.get_named_attribute_value_safe("filename")
 					
-					var filename = parser.get_named_attribute_value_safe("filename")
-					target_object.mesh_path = filename
+					var scale_str = parser.get_named_attribute_value_safe("scale")
+					if not scale_str.is_empty():
+						var scale_split = scale_str.split(" ", false)
+						if scale_split.size() >= 3:
+							var parsed_scale := Vector3(
+								float(scale_split[0]),
+								float(scale_split[1]),
+								float(scale_split[2])
+							)
+							if "mesh_scale" in target_object:
+								target_object.mesh_scale = parsed_scale
+							elif "scale" in target_object:
+								target_object.scale = parsed_scale
+
 				_:
 					push_error("Unsupported geometry for visual in link properties: ", node_name)
 					parser.skip_section()
+
 		elif node_type == XMLParser.NODE_ELEMENT_END:
 			if parser.get_node_name() == "geometry":
 				return
@@ -310,7 +356,8 @@ func parse_material_color(parser: XMLParser) -> Vector4:
 
 	while parser.read() == OK:
 		var node_type = parser.get_node_type()
-		if node_type == XMLParser.NODE_TEXT: continue
+		if node_type == XMLParser.NODE_TEXT:
+			continue
 		if node_type == XMLParser.NODE_ELEMENT and \
 				parser.get_node_name() == "color":
 			var rgba_str = parser.get_named_attribute_value_safe("rgba")

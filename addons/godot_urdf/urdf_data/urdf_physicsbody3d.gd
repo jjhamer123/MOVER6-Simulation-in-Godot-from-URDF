@@ -9,8 +9,11 @@ static func update_link(
 		source_path: String) -> void:
 	body.name = link.name
 	
-	robot_node.add_child(body)
-	body.owner = owner_node
+	# Only parent to robot_node if the body hasn't already been attached to a joint pivot node
+	if body.get_parent() == null:
+		robot_node.add_child(body)
+		if owner_node:
+			body.owner = owner_node
 
 	if link.inertial:
 		body.mass = link.inertial.mass
@@ -27,7 +30,7 @@ static func update_link(
 		var c = visual.material_color
 		if c != Vector4.ZERO:
 			material.albedo_color = Color(c.x, c.y, c.z, c.w)
-		elif visual.material_name in robot_node.urdf.materials:
+		elif robot_node.urdf and visual.material_name in robot_node.urdf.materials:
 			c = robot_node.urdf.materials[visual.material_name]
 			material.albedo_color = Color(c.x, c.y, c.z, c.w)
 

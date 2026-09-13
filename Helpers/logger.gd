@@ -4,24 +4,36 @@ class_name BaseLinkLogger
 @export var godot_robot: GodotRobot
 @export var log_interval_sec: float = 1
 @export var write_to_file: bool = true
+## Optional: force which link to track (its URDF link name). Leave blank to
+## auto-pick the deepest leaf link (the usual end-effector for a serial arm).
+## Set this explicitly for grippers/branching arms where auto-pick might grab
+## the wrong tip.
+@export var end_link_name: String = ""
  
 var _end_body: RigidBody3D
 var _timer: float = 0.0
 var _start_transform: Transform3D
  
-func _find_rigid_bodies(node: Node) -> Array[RigidBody3D]:
-	var result: Array[RigidBody3D] = []
-	for child in node.get_children():
-		if child is RigidBody3D:
-			result.append(child)
-		result.append_array(_find_rigid_bodies(child))
-	return result
- 
 func _ready() -> void:
- 
-	var bodies: Array[RigidBody3D] = _find_rigid_bodies(godot_robot)
- 
-	_end_body = bodies[-1]
+	reinitialize()
+
+## Re-finds the tracked end-link. Call this after swapping in a new
+## GodotRobot - it's not just a one-time _ready() step.
+func reinitialize() -> void:
+	if not godot_robot:
+		push_warning("BaseLinkLogger: no godot_robot assigned")
+		return
+
+	var link_name := end_link_name
+	if link_name.is_empty():
+		link_name = godot_robot.get_deepest_leaf_link_name()
+
+	var node: Node3D = godot_robot.links.get(link_name)
+	_end_body = node as RigidBody3D
+	if not _end_body:
+		push_warning("BaseLinkLogger: link '%s' not found or not a RigidBody3D - not logging" % link_name)
+		return
+
 	_start_transform = _end_body.global_transform
 
 func _physics_process(delta: float) -> void:
