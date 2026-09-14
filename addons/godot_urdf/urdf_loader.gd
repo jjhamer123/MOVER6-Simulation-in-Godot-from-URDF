@@ -12,6 +12,10 @@ extends Node3D
 # Change "package://robot_description/meshes/..." to "res://urdf/..."
 @export_dir var package_folder: String = ""
 
+@export_group("Physics")
+# Multiplies every link's URDF-parsed mass, e.g. 2.0 = twice as heavy overall.
+@export var mass_scale: float = 1.0
+
 @export_group("Transform")
 @export var _position: Vector3 = Vector3(0, 0, 0)
 @export var _rotation: Vector3 = Vector3(0, 0, 0)
@@ -35,6 +39,7 @@ func _load_urdf():
 		options["scale"] = _scale
 	if package_folder != "":
 		options["package_folder"] = package_folder
+	options["mass_scale"] = mass_scale
 
 	URDFUtils.apply_defaults(options)
 

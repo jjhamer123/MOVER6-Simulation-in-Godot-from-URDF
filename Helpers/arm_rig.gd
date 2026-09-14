@@ -13,6 +13,10 @@ class_name ArmRig
 ## 0 = use the URDF's own config / godot_urdf's default (1mm -> 1 unit)
 @export var robot_scale: float = 0.0
 
+@export_group("Physics")
+# Multiplies every link's URDF-parsed mass, e.g. 2.0 = twice as heavy overall.
+@export var mass_scale: float = 1.0
+
 @export_group("Downstream nodes")
 @export var joint_controller: RobotJointController
 @export var base_link_logger: BaseLinkLogger
@@ -56,6 +60,7 @@ func load_robot() -> void:
 		options["scale"] = robot_scale
 	if package_folder != "":
 		options["package_folder"] = package_folder
+	options["mass_scale"] = mass_scale
 	URDFUtils.apply_defaults(options)
 	print("URDF options: ", options)
 	

@@ -14,3 +14,6 @@ func update_link(
 		self, link, robot_node, owner_node, options, source_path)
 	if link.inertial:
 		self.center_of_mass = link.inertial.origin_xyz
+		if link.inertial.mass > 0.0:
+			var mass_scale: float = options.get("mass_scale", 1.0)
+			self.mass = link.inertial.mass * mass_scale
