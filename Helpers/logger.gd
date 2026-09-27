@@ -4,10 +4,10 @@ class_name BaseLinkLogger
 @export var godot_robot: GodotRobot
 @export var log_interval_sec: float = 1
 @export var write_to_file: bool = true
-#Optional: force which link to track (its URDF link name). Leave blank to
-#auto-pick the deepest leaf link (the usual end-effector for a serial arm).
-#Set this explicitly for grippers/branching arms where auto-pick might grab
-#the wrong tip.
+#optional, force which link track (URDF link name). Leave blank to
+#auto-pick the deepest leaf link (end-effector for arm).
+#Set explicitly for grippers/branching arms where auto-pick might grab
+#the wrong one
 @export var end_link_name: String = ""
  
 var _end_body: RigidBody3D
@@ -34,6 +34,8 @@ func reinitialize() -> void:
 		return
 
 	_start_transform = _end_body.global_transform
+
+#find the end link
 
 func _find_deepest_real_leaf_link() -> String:
 	if not godot_robot or not godot_robot.urdf:
