@@ -3,20 +3,13 @@ class_name RobotJointController
 
 @export var godot_robot: GodotRobot
 
-## If a link's URDF had no <inertial> tag at all, estimate a real mass from
-## its collision geometry instead of leaving it at Godot's flat default of
-## 1kg (this is what caused the overshoot/instability on Mover6 before link
-## masses were manually set).
+## if link's URDF had no <inertial> tag at all, estimate a real mass from
 @export var estimate_missing_mass: bool = true
 @export var default_link_density_kg_m3: float = 1200.0
-## AABB-based mesh volume estimate is inherently an overestimate (a hull
-## rarely fills its bounding box) - this knocks it down to a more realistic
-## fraction. Tune per-robot if link masses come out too heavy/light.
+
 @export var mesh_collider_fill_factor: float = 0.55
 
-## Optional hand-tuned masses, keyed by the link's actual URDF name (not
-## joint name). Only needed if the auto-estimate above isn't good enough for
-## a particular arm - leave empty to just use geometry estimation.
+#Custom masses
 @export var link_mass_overrides: Dictionary[String, float] = {}
 
 var _joints: Dictionary[String, Dictionary] = {}
@@ -26,9 +19,8 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	reinitialize()
 
-## Rebuilds the joint/link tracking from godot_robot. Call this after
-## swapping in a new GodotRobot (e.g. loading a different URDF) - it's not
-## just a one-time _ready() step.
+#New URDF Builder
+
 func reinitialize() -> void:
 	if not godot_robot:
 		push_warning("RobotJointController: no godot_robot assigned")
@@ -77,11 +69,6 @@ func apply_link_masses() -> void:
 		if not estimate_missing_mass:
 			continue
 
-		# URDFRigidBody3D carries the source URDFLink directly - if it has no
-		# <inertial> tag at all, `link.inertial` is null and godot_urdf left
-		# body.mass at Godot's flat default. That's the real "missing" signal
-		# (checking mass == 1.0 would also wrongly match a URDF that
-		# genuinely specifies mass="1.0").
 		var urdf_link: URDFLink = (body_b as URDFRigidBody3D).link if body_b is URDFRigidBody3D else null
 		if urdf_link and urdf_link.inertial:
 			continue
@@ -117,18 +104,13 @@ func _shape_volume(shape: Shape3D, scale: Vector3) -> float:
 		return PI * r * r * h
 	elif (shape is ConvexPolygonShape3D or shape is ConcavePolygonShape3D) \
 			and shape.has_method("get_debug_mesh"):
-		# godot_urdf builds mesh colliders as ConvexPolygonShape3D via
-		# Mesh.create_convex_shape() - almost every real URDF link (any STL/
-		# DAE mesh) lands here. get_debug_mesh()'s AABB is a bounding-box
-		# estimate, not the true hull volume, so it's scaled down by
-		# mesh_collider_fill_factor to avoid badly overestimating mass.
 		var aabb: AABB = shape.get_debug_mesh().get_aabb()
 		var s: Vector3 = aabb.size * scale
 		return s.x * s.y * s.z * mesh_collider_fill_factor
 	return 0.0
 
 
-#CONTROL THE ROBOT
+#CONTROL ROBOT
 func set_joint_velocity(joint_name: String, velocity_rad_s: float) -> void:
 	if not _joints.has(joint_name):
 		push_warning("RobotJointController: unknown jont '%s'" % joint_name)
@@ -177,10 +159,6 @@ func get_joint_limits(joint_name: String) -> Vector2:
 	if not _joints.has(joint_name):
 		return Vector2(-INF, INF)
 	var data: Dictionary = _joints[joint_name]
-	# Only "revolute" joints have a real angular limit. "continuous" (and
-	# anything else) is unlimited - Godot represents that internally as
-	# lower_limit=1.0, upper_limit=0.0 (lower > upper = disabled), which
-	# would otherwise get misread as a genuine limit of (1.0, 0.0).
 	if data.get("type", "") != "revolute":
 		return Vector2(-INF, INF)
 	var joint_node: Generic6DOFJoint3D = data["node"]

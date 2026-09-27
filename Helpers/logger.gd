@@ -4,10 +4,10 @@ class_name BaseLinkLogger
 @export var godot_robot: GodotRobot
 @export var log_interval_sec: float = 1
 @export var write_to_file: bool = true
-## Optional: force which link to track (its URDF link name). Leave blank to
-## auto-pick the deepest leaf link (the usual end-effector for a serial arm).
-## Set this explicitly for grippers/branching arms where auto-pick might grab
-## the wrong tip.
+#Optional: force which link to track (its URDF link name). Leave blank to
+#auto-pick the deepest leaf link (the usual end-effector for a serial arm).
+#Set this explicitly for grippers/branching arms where auto-pick might grab
+#the wrong tip.
 @export var end_link_name: String = ""
  
 var _end_body: RigidBody3D
@@ -17,8 +17,7 @@ var _start_transform: Transform3D
 func _ready() -> void:
 	reinitialize()
 
-## Re-finds the tracked end-link. Call this after swapping in a new
-## GodotRobot - it's not just a one-time _ready() step.
+
 func reinitialize() -> void:
 	if not godot_robot:
 		push_warning("BaseLinkLogger: no godot_robot assigned")
@@ -36,19 +35,11 @@ func reinitialize() -> void:
 
 	_start_transform = _end_body.global_transform
 
-## GodotRobot.get_deepest_leaf_link_name() decides "leaf" status using every
-## joint in the URDF, even if the child link was never actually instantiated
-## (URDFs often have zero-geometry "virtual" frames - e.g. UR5e's ft_frame,
-## flange, tool0 - which GodotRobot silently skips when building `links`).
-## That makes every *real* link look like it "has a child" and leaves the
-## leaf search empty. This re-does the leaf/depth search using only link
-## names that actually exist as nodes in godot_robot.links.
 func _find_deepest_real_leaf_link() -> String:
 	if not godot_robot or not godot_robot.urdf:
 		return ""
 
 	var real_links: Dictionary = godot_robot.links
-	# child -> parent, restricted to joints where BOTH ends are real nodes
 	var parent_of: Dictionary = {}
 	var has_real_child: Dictionary = {}
 	for joint in godot_robot.urdf.joints:

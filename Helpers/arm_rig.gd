@@ -10,11 +10,11 @@ class_name ArmRig
 @export_group("Transform")
 @export var robot_position: Vector3 = Vector3.ZERO
 @export var robot_rotation_deg: Vector3 = Vector3.ZERO
-## 0 = use the URDF's own config / godot_urdf's default (1mm -> 1 unit)
+
 @export var robot_scale: float = 0.0
 
 @export_group("Physics")
-# Multiplies every link's URDF-parsed mass, e.g. 2.0 = twice as heavy overall.
+
 @export var mass_scale: float = 1.0
 
 @export_group("Downstream nodes")
@@ -111,7 +111,6 @@ func _wire_downstream() -> void:
 	if ros_bridge and joint_controller:
 		ros_bridge.robot_controller = joint_controller
 		
-# --- URDF XML Parsing & Visual Mesh Rotation ---
 
 func get_compound_links_from_urdf(path: String) -> Array[String]:
 	var compound_links: Array[String] = []

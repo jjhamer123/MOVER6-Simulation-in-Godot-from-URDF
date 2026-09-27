@@ -4,26 +4,18 @@ class_name RosArmBridge
 @export var robot_controller: RobotJointController
 @export var robot_name: String = "Robot"
 
-## The arm's real max joint speed (rad/s) - JointJog sends a normalized
-## -1..1 fraction of this. Tune per-robot; Mover6's cpr_ros2 driver used 2.0.
+
 @export var max_joint_velocity: float = 1.0
 @export var limit_margin: float = 0.0
 
-## Per-joint sign correction, keyed by joint name, only needed when a joint's
-## physical/URDF axis convention is reversed relative to the ROS driver's
-## convention. Leave empty for a new arm - fill in only the joints that need
-## flipping once you see it moving the wrong way (Mover6 needed all six).
+
 @export var joint_sign_overrides: Dictionary[String, float] = {}
 
-## Simulation: incoming /JointJog commands actually drive the arm's physics.
-## Shadow: incoming commands are ignored (no motion applied) - the arm just
-## reports whatever state it's already in. Toggle at runtime with set_mode()
-## or toggle_mode(), e.g. from an overlay/HUD script.
+
 enum Mode { SIMULATION, SHADOW }
 @export var mode: Mode = Mode.SIMULATION
 
-## How long without a new /JointJog message before we consider the link
-## "disconnected", for HUD/status purposes.
+
 @export var connection_timeout_sec: float = 1.0
 @export var sign_flip=false
 
@@ -69,8 +61,6 @@ func _process(_delta):
 				elif v < 0.0 and angle <= limits.x + limit_margin:
 					v = 0.0
 
-			# Shadow mode: never apply incoming commands to the physics -
-			# the arm just sits at whatever state it's already in.
 			if mode == Mode.SIMULATION:
 				robot_controller.set_joint_velocity(names[i], v)
 				_last_velocities[names[i]] = v

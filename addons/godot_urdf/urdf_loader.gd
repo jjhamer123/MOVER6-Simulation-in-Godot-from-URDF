@@ -1,7 +1,5 @@
 @tool
 extends Node3D
-# Script you can attach to your node to load a robots elements as child
-# making it easier to modify/extend the robot
 
 @export_group("URDF File")
 @export_file("*.urdf", "*.xml") var urdf_file_path: String
@@ -9,11 +7,9 @@ extends Node3D
 @export_tool_button("Reload robot", "Godot") var _load_urdf_button = _load_urdf
 
 @export_group("Package Directory")
-# Change "package://robot_description/meshes/..." to "res://urdf/..."
 @export_dir var package_folder: String = ""
 
 @export_group("Physics")
-# Multiplies every link's URDF-parsed mass, e.g. 2.0 = twice as heavy overall.
 @export var mass_scale: float = 1.0
 
 @export_group("Transform")
