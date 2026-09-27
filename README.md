@@ -33,7 +33,8 @@ Everything else - `RobotJointController`, `ArmRig`, `BaseLinkLogger`,
 ## Requirements
 
 - A custom Godot 4.4 binary with the `godot_ros` module compiled in, linked
-  against **ROS 2 Jazzy**
+  against **ROS 2 Jazzy** which can be found here https://github.com/jjhamer123/Godot-ROS-custom-build
+  and this repo is a submodule of
 - ROS 2 Jazzy (native Linux is the smoothest path; see *Platform notes*
   below for Windows/WSL2)
 - Jolt Physics (already selected as the 3D physics engine in
