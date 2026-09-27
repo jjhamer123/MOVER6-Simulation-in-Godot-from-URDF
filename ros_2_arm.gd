@@ -45,6 +45,7 @@ func _process(_delta):
 	jog.spin_some()
 	state_pub.spin_some()
 
+	#new ros 2
 	if jog.has_new_data():
 		_last_command_time_msec = Time.get_ticks_msec()
 		var names = jog.get_joint_names()
@@ -55,12 +56,15 @@ func _process(_delta):
 			var v = clamp(vels[i], -1.0, 1.0) * max_joint_velocity * sign_flip
 			var angle = robot_controller.get_joint_angle(names[i]) * sign_flip
 			var limits = robot_controller.get_joint_limits(names[i])
+			
+			#check limits
 			if is_finite(limits.x) and is_finite(limits.y):
 				if v > 0.0 and angle >= limits.y - limit_margin:
 					v = 0.0
 				elif v < 0.0 and angle <= limits.x + limit_margin:
 					v = 0.0
 
+			#SHADOW VS SIM
 			if mode == Mode.SIMULATION:
 				robot_controller.set_joint_velocity(names[i], v)
 				_last_velocities[names[i]] = v

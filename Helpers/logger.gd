@@ -74,6 +74,7 @@ func _real_link_depth(link_name: String, parent_of: Dictionary, cache: Dictionar
 	cache[link_name] = depth
 	return depth
 
+
 func _physics_process(delta: float) -> void:
 	if not _end_body:
 		return
@@ -81,7 +82,7 @@ func _physics_process(delta: float) -> void:
 	if _timer < log_interval_sec:
 		return
 	_timer = 0.0
- 
+ 	#get last link
 	var t: Transform3D = _end_body.global_transform
 	var pos: Vector3 = t.origin
 	var rot_deg: Vector3 = t.basis.get_euler() * (180.0 / PI)

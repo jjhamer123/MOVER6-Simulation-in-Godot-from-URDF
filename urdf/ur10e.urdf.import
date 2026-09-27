@@ -1,0 +1,14 @@
+[remap]
+
+importer="godot_urdf"
+type="PackedScene"
+uid="uid://cgt0w6f6gnmol"
+path="res://.godot/imported/ur10e.urdf-f730ddf19bf4c9a0d34c3f12ce13b173.tscn"
+
+[deps]
+
+source_file="res://urdf/ur10e.urdf"
+dest_files=["res://.godot/imported/ur10e.urdf-f730ddf19bf4c9a0d34c3f12ce13b173.tscn"]
+
+[params]
+

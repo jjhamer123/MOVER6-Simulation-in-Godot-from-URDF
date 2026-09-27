@@ -8,9 +8,10 @@ var _joint_defs: Dictionary[String, Dictionary] = {}
 var links: Dictionary[String, Node3D] = {}
 
 @export var urdf: Resource
+#frosen base
 @export var pin_base_link: bool = true
 
-
+#sames robot rather than reloading each time
 func rebuild_caches() -> void:
 	links.clear()
 	_joint_defs.clear()
