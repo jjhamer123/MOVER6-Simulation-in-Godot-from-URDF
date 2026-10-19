@@ -19,7 +19,15 @@ class_name RobotJointController
 
 var _joints: Dictionary[String, Dictionary] = {}
 var _link_names: Dictionary[String, String] = {}  # joint name -> child link name
+## Force a joint's motor direction (+1 or -1) instead of learning it
+@export var motor_direction_overrides: Dictionary[String, float] = {}
+
 var _targets: Dictionary[String, float] = {}      # joint name -> target angle (rad)
+var _last_cmd: Dictionary[String, float] = {}     # last motor velocity sent
+var _prev_angle: Dictionary[String, float] = {}
+var _motor_dir: Dictionary[String, float] = {}
+var _dir_votes: Dictionary[String, int] = {}
+var _dir_locked: Dictionary[String, bool] = {}
 
 func _ready() -> void:
 	await get_tree().physics_frame
@@ -144,12 +152,38 @@ func _set_motor_velocity(joint_name: String, velocity_rad_s: float) -> void:
 	var joint_node: Generic6DOFJoint3D = _joints[joint_name]["node"]
 	joint_node.set_param_z(
 		Generic6DOFJoint3D.PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, velocity_rad_s)
+	_last_cmd[joint_name] = velocity_rad_s
 
-func _physics_process(_delta: float) -> void:
+## +1 if a positive motor velocity makes get_joint_angle() increase, -1 if it
+## decreases. Learned automatically from how each joint actually moves.
+func get_motor_direction(joint_name: String) -> float:
+	if motor_direction_overrides.has(joint_name):
+		return motor_direction_overrides[joint_name]
+	return _motor_dir.get(joint_name, 1.0)
+
+func _learn_motor_directions(delta: float) -> void:
+	for joint_name in _joints.keys():
+		var angle := get_joint_angle(joint_name)
+		if _prev_angle.has(joint_name) and not _dir_locked.get(joint_name, false) \
+				and not motor_direction_overrides.has(joint_name):
+			var rate := angle_difference(_prev_angle[joint_name], angle) / delta
+			var cmd: float = _last_cmd.get(joint_name, 0.0)
+			if absf(cmd) > 0.05 and absf(rate) > 0.02:
+				var vote := 1 if signf(rate) == signf(cmd) else -1
+				_dir_votes[joint_name] = _dir_votes.get(joint_name, 0) + vote
+				if absi(_dir_votes[joint_name]) >= 5:
+					_motor_dir[joint_name] = signf(_dir_votes[joint_name])
+					_dir_locked[joint_name] = true
+					print("RobotJointController: '%s' motor direction = %+d" \
+							% [joint_name, int(_motor_dir[joint_name])])
+		_prev_angle[joint_name] = angle
+
+func _physics_process(delta: float) -> void:
+	_learn_motor_directions(delta)
 	for joint_name in _targets.keys():
 		var err := angle_difference(get_joint_angle(joint_name), _targets[joint_name])
 		var v: float = clamp(position_kp * err, -position_max_velocity, position_max_velocity)
-		_set_motor_velocity(joint_name, v)
+		_set_motor_velocity(joint_name, v * get_motor_direction(joint_name))
 
 # joint angle output
 func get_joint_angle(joint_name: String) -> float:
