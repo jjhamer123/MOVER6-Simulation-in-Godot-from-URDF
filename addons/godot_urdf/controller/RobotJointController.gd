@@ -12,8 +12,14 @@ class_name RobotJointController
 #Custom masses
 @export var link_mass_overrides: Dictionary[String, float] = {}
 
+## Position control (used by set_joint_angle): a P-controller drives the
+## joint motor towards the target angle each physics frame.
+@export var position_kp: float = 10.0
+@export var position_max_velocity: float = 3.0
+
 var _joints: Dictionary[String, Dictionary] = {}
 var _link_names: Dictionary[String, String] = {}  # joint name -> child link name
+var _targets: Dictionary[String, float] = {}      # joint name -> target angle (rad)
 
 func _ready() -> void:
 	await get_tree().physics_frame
@@ -115,9 +121,35 @@ func set_joint_velocity(joint_name: String, velocity_rad_s: float) -> void:
 	if not _joints.has(joint_name):
 		push_warning("RobotJointController: unknown jont '%s'" % joint_name)
 		return
+	_targets.erase(joint_name)  # velocity command overrides any position target
+	_set_motor_velocity(joint_name, velocity_rad_s)
+
+## Drive a joint to a target angle (rad). Held until a velocity command
+## or clear_joint_targets() replaces it.
+func set_joint_angle(joint_name: String, angle_rad: float) -> void:
+	if not _joints.has(joint_name):
+		push_warning("RobotJointController: unknown jont '%s'" % joint_name)
+		return
+	var limits := get_joint_limits(joint_name)
+	if is_finite(limits.x) and is_finite(limits.y):
+		angle_rad = clamp(angle_rad, limits.x, limits.y)
+	_targets[joint_name] = angle_rad
+
+func clear_joint_targets() -> void:
+	for joint_name in _targets.keys():
+		_set_motor_velocity(joint_name, 0.0)
+	_targets.clear()
+
+func _set_motor_velocity(joint_name: String, velocity_rad_s: float) -> void:
 	var joint_node: Generic6DOFJoint3D = _joints[joint_name]["node"]
 	joint_node.set_param_z(
 		Generic6DOFJoint3D.PARAM_ANGULAR_MOTOR_TARGET_VELOCITY, velocity_rad_s)
+
+func _physics_process(_delta: float) -> void:
+	for joint_name in _targets.keys():
+		var err := angle_difference(get_joint_angle(joint_name), _targets[joint_name])
+		var v: float = clamp(position_kp * err, -position_max_velocity, position_max_velocity)
+		_set_motor_velocity(joint_name, v)
 
 # joint angle output
 func get_joint_angle(joint_name: String) -> float:

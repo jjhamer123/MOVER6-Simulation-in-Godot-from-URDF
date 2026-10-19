@@ -4,13 +4,23 @@ class_name RosArmBridge
 @export var robot_controller: RobotJointController
 @export var robot_name: String = "Robot"
 
+
 @export var max_joint_velocity: float = 1.0
 @export var limit_margin: float = 0.0
 
+
 @export var joint_sign_overrides: Dictionary[String, float] = {}
 
+
 enum Mode { SIMULATION, SHADOW }
-@export var mode: Mode = Mode.SIMULATION
+@export var mode: Mode = Mode.SIMULATION:
+	set(value):
+		mode = value
+		if is_node_ready():
+			_on_mode_changed()
+
+## Topic the real robot publishes its joint states on (read in SHADOW mode)
+@export var shadow_topic: String = "/joint_states"
 
 @export var connection_timeout_sec: float = 1.0
 @export var sign_flip := false
@@ -26,28 +36,29 @@ func _ready():
 	jog = JointJogController.new()
 	state_pub = JointStatePublisher.new()
 	state_sub = JointStateSubscriber.new()
+	state_sub.set_topic(shadow_topic)
 
 func toggle_mode() -> void:
 	set_mode(Mode.SHADOW if mode == Mode.SIMULATION else Mode.SIMULATION)
 
 func set_mode(new_mode: Mode) -> void:
 	mode = new_mode
-	# Stop any leftover jog motion when entering shadow
-	if mode == Mode.SHADOW:
-		for name in robot_controller.get_joint_names():
-			robot_controller.set_joint_velocity(name, 0.0)
-			_last_velocities[name] = 0.0
 
 func mode_name() -> String:
 	return "Simulation" if mode == Mode.SIMULATION else "Shadow"
 
-## True if a /JointJog message has arrived within connection_timeout_sec.
+## True if the active input has sent data within connection_timeout_sec:
+## /JointJog in SIMULATION, real-robot joint states in SHADOW.
 func is_online() -> bool:
-	return (Time.get_ticks_msec() - _last_command_time_msec) / 1000.0 < connection_timeout_sec
+	var last := _last_command_time_msec if mode == Mode.SIMULATION else _last_shadow_time_msec
+	return (Time.get_ticks_msec() - last) / 1000.0 < connection_timeout_sec
 
-## True if real-robot joint states have arrived within connection_timeout_sec.
-func is_shadow_online() -> bool:
-	return (Time.get_ticks_msec() - _last_shadow_time_msec) / 1000.0 < connection_timeout_sec
+func _on_mode_changed() -> void:
+	# Stop motion and release any held shadow targets on every switch
+	robot_controller.clear_joint_targets()
+	for name in robot_controller.get_joint_names():
+		robot_controller.set_joint_velocity(name, 0.0)
+		_last_velocities[name] = 0.0
 
 func _global_sign() -> float:
 	return -1.0 if sign_flip else 1.0
@@ -93,7 +104,8 @@ func _handle_shadow() -> void:
 	var positions = state_sub.get_joint_positions()
 	var s := _global_sign()
 
-	for i in names.size():
+	# Some drivers send names without positions; skip those messages
+	for i in min(names.size(), positions.size()):
 		# Undo the same flip used when publishing, so the mapping is symmetric
 		robot_controller.set_joint_angle(names[i], positions[i] * s)
 
