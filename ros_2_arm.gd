@@ -24,6 +24,8 @@ enum Mode { SIMULATION, SHADOW }
 
 @export var connection_timeout_sec: float = 1.0
 @export var sign_flip := false
+@export var shadow_sign_flip := false
+
 
 var jog: JointJogController
 var state_pub: JointStatePublisher
@@ -102,7 +104,9 @@ func _handle_shadow() -> void:
 	_last_shadow_time_msec = Time.get_ticks_msec()
 	var names = state_sub.get_joint_names()
 	var positions = state_sub.get_joint_positions()
-	var s := _global_sign()
+	var s := -1.0 if shadow_sign_flip else 1.0
+
+	# Some drivers send names without positions; skip those messages
 
 	# Some drivers send names without positions; skip those messages
 	for i in min(names.size(), positions.size()):
