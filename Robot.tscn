@@ -1,4 +1,4 @@
-[gd_scene load_steps=101 format=3 uid="uid://df7u8lvb6nooj"]
+[gd_scene load_steps=102 format=3 uid="uid://df7u8lvb6nooj"]
 
 [ext_resource type="Script" uid="uid://c3igv34dt3de3" path="res://camera_3dmove.gd" id="1_0baai"]
 [ext_resource type="Script" uid="uid://m7w8s8612ys7" path="res://varsee.gd" id="1_f6xbj"]
@@ -14,8 +14,13 @@
 [ext_resource type="Script" uid="uid://dif43xw48rdps" path="res://addons/godot_urdf/urdf_data/urdf_inertial.gd" id="12_0baai"]
 [ext_resource type="Script" uid="uid://c1lmjuqtvql6y" path="res://addons/godot_urdf/urdf_data/urdf_robot.gd" id="13_f6xbj"]
 [ext_resource type="Script" uid="uid://uwth7u1whmh6" path="res://addons/godot_urdf/urdf_rigidbody3d.gd" id="14_va547"]
+[ext_resource type="ArrayMesh" uid="uid://iu46ggfthfe5" path="res://robot_art/robot_art_layer/meshes/bar.stl" id="15_0baai"]
 [ext_resource type="Script" uid="uid://dvx8qhnnutpip" path="res://addons/godot_urdf/urdf_data/urdf_visual_node.gd" id="15_effes"]
 [ext_resource type="Script" uid="uid://eqxo05mprbxr" path="res://addons/godot_urdf/urdf_6dof_joint3d.gd" id="16_8piux"]
+[ext_resource type="ArrayMesh" uid="uid://d4ehbruvve58b" path="res://robot_art/robot_art_layer/meshes/clampA.stl" id="16_f6xbj"]
+[ext_resource type="ArrayMesh" uid="uid://b42ao4662opg5" path="res://robot_art/robot_art_layer/meshes/motor.stl" id="17_va547"]
+[ext_resource type="ArrayMesh" uid="uid://do5truhdttchf" path="res://robot_art/robot_art_layer/meshes/support.stl" id="18_effes"]
+[ext_resource type="ArrayMesh" uid="uid://x5ubthyh8j3c" path="res://robot_art/robot_art_layer/meshes/hub.stl" id="19_8piux"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cn6ah"]
 height = 1.0
@@ -47,23 +52,7 @@ mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
 
-[sub_resource type="GDScript" id="GDScript_408ef"]
-
-[sub_resource type="Resource" id="Resource_r5h8m"]
-script = SubResource("GDScript_408ef")
-damping = 0.0
-friction = 0.002
-
-[sub_resource type="GDScript" id="GDScript_k8x3c"]
-
-[sub_resource type="Resource" id="Resource_7l0sk"]
-script = SubResource("GDScript_k8x3c")
-lower = 0.0
-upper = 0.0
-effort = 0.0
-velocity = 10.0
-
-[sub_resource type="Resource" id="Resource_m7mem"]
+[sub_resource type="Resource" id="Resource_ejva2"]
 script = ExtResource("8_04yja")
 name = "pivot"
 type = "continuous"
@@ -75,22 +64,8 @@ axis = Vector3(0, 1, 0)
 mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
-limit = SubResource("Resource_7l0sk")
-dynamics = SubResource("Resource_r5h8m")
 
-[sub_resource type="Resource" id="Resource_k25cy"]
-script = SubResource("GDScript_408ef")
-damping = 0.0
-friction = 0.5
-
-[sub_resource type="Resource" id="Resource_ejva2"]
-script = SubResource("GDScript_k8x3c")
-lower = -0.214
-upper = 0.214
-effort = 0.0
-velocity = 1.0
-
-[sub_resource type="Resource" id="Resource_qb2dd"]
+[sub_resource type="Resource" id="Resource_yfb86"]
 script = ExtResource("8_04yja")
 name = "support"
 type = "prismatic"
@@ -102,10 +77,8 @@ axis = Vector3(1, 0, 0)
 mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
-limit = SubResource("Resource_ejva2")
-dynamics = SubResource("Resource_k25cy")
 
-[sub_resource type="Resource" id="Resource_1oser"]
+[sub_resource type="Resource" id="Resource_hrn5k"]
 script = ExtResource("8_04yja")
 name = "encoder_mount"
 type = "fixed"
@@ -118,19 +91,7 @@ mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
 
-[sub_resource type="Resource" id="Resource_yfb86"]
-script = SubResource("GDScript_408ef")
-damping = 0.0
-friction = 0.0
-
-[sub_resource type="Resource" id="Resource_hrn5k"]
-script = SubResource("GDScript_k8x3c")
-lower = 0.0
-upper = 0.0
-effort = 0.13
-velocity = 1.0
-
-[sub_resource type="Resource" id="Resource_8ddqe"]
+[sub_resource type="Resource" id="Resource_fhpto"]
 script = ExtResource("8_04yja")
 name = "joint"
 type = "continuous"
@@ -142,37 +103,21 @@ axis = Vector3(0, 1, 0)
 mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
-limit = SubResource("Resource_hrn5k")
-dynamics = SubResource("Resource_yfb86")
 
-[sub_resource type="Resource" id="Resource_sx1ag"]
-script = SubResource("GDScript_408ef")
-damping = 0.5
-friction = 0.0
-
-[sub_resource type="Resource" id="Resource_fhpto"]
-script = SubResource("GDScript_k8x3c")
-lower = 0.03
-upper = 0.17
-effort = 20.0
-velocity = 0.05
-
-[sub_resource type="Resource" id="Resource_8wdww"]
+[sub_resource type="Resource" id="Resource_j3b1v"]
 script = ExtResource("8_04yja")
 name = "clampB"
 type = "prismatic"
 parent = "hub"
 child = "next_bar"
-origin_xyz = Vector3(0, -0.0367, 0)
+origin_xyz = Vector3(0.07, -0.0367, 0)
 origin_rpy = Vector3(4.37114e-08, 1.5708, -4.37114e-08)
 axis = Vector3(0, 0, 1)
 mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
-limit = SubResource("Resource_fhpto")
-dynamics = SubResource("Resource_sx1ag")
 
-[sub_resource type="Resource" id="Resource_kigti"]
+[sub_resource type="Resource" id="Resource_jga7c"]
 script = ExtResource("8_04yja")
 name = "track_L_fixed"
 type = "fixed"
@@ -185,7 +130,7 @@ mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
 
-[sub_resource type="Resource" id="Resource_j3b1v"]
+[sub_resource type="Resource" id="Resource_n0jpv"]
 script = ExtResource("8_04yja")
 name = "track_R_fixed"
 type = "fixed"
@@ -198,13 +143,13 @@ mimic_joint = ""
 mimic_multiplier = 1.0
 mimic_offset = 0.0
 
-[sub_resource type="Resource" id="Resource_jga7c"]
+[sub_resource type="Resource" id="Resource_ddqrg"]
 script = ExtResource("10_50kos")
 name = "world"
 visuals = Array[ExtResource("11_k2aci")]([])
 colliders = Array[ExtResource("9_iuyqn")]([])
 
-[sub_resource type="Resource" id="Resource_n0jpv"]
+[sub_resource type="Resource" id="Resource_aoe7m"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, 0, -0.086)
 origin_rpy = Vector3(0, 0, 0)
@@ -215,7 +160,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_ddqrg"]
+[sub_resource type="Resource" id="Resource_xuocl"]
 script = ExtResource("12_0baai")
 mass = 0.1
 inertia_tensor = {
@@ -229,7 +174,7 @@ inertia_tensor = {
 origin_xyz = Vector3(0, 0, -0.086)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_aoe7m"]
+[sub_resource type="Resource" id="Resource_vminv"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -240,17 +185,17 @@ type = 1
 size = Vector3(0, 0, 0)
 radius = 0.0
 length = 0.0
-mesh_path = "../meshes/bar.stl"
+mesh_path = "package://robot_art_layer/meshes/bar.stl"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_xuocl"]
+[sub_resource type="Resource" id="Resource_oh6kk"]
 script = ExtResource("10_50kos")
 name = "bar_above"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_aoe7m")])
-colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_n0jpv")])
-inertial = SubResource("Resource_ddqrg")
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_vminv")])
+colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_aoe7m")])
+inertial = SubResource("Resource_xuocl")
 
-[sub_resource type="Resource" id="Resource_vminv"]
+[sub_resource type="Resource" id="Resource_x8k7r"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -261,7 +206,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_oh6kk"]
+[sub_resource type="Resource" id="Resource_w1l4p"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, -0.0207, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -272,7 +217,7 @@ length = 0.013
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_x8k7r"]
+[sub_resource type="Resource" id="Resource_itdhk"]
 script = ExtResource("12_0baai")
 mass = 0.028
 inertia_tensor = {
@@ -286,7 +231,7 @@ inertia_tensor = {
 origin_xyz = Vector3(-0.00011, -0.01275, 0)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_w1l4p"]
+[sub_resource type="Resource" id="Resource_3qlu7"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -297,17 +242,17 @@ type = 1
 size = Vector3(0, 0, 0)
 radius = 0.0
 length = 0.0
-mesh_path = "../meshes/clampA.stl"
+mesh_path = "package://robot_art_layer/meshes/clampA.stl"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_itdhk"]
+[sub_resource type="Resource" id="Resource_2wkdl"]
 script = ExtResource("10_50kos")
 name = "clampA"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_w1l4p")])
-colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_vminv"), SubResource("Resource_oh6kk")])
-inertial = SubResource("Resource_x8k7r")
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_3qlu7")])
+colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_x8k7r"), SubResource("Resource_w1l4p")])
+inertial = SubResource("Resource_itdhk")
 
-[sub_resource type="Resource" id="Resource_3qlu7"]
+[sub_resource type="Resource" id="Resource_nibki"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, -0.0237, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -318,7 +263,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_2wkdl"]
+[sub_resource type="Resource" id="Resource_3hdby"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, -0.0594, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -329,7 +274,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_nibki"]
+[sub_resource type="Resource" id="Resource_3ucje"]
 script = ExtResource("12_0baai")
 mass = 0.2011
 inertia_tensor = {
@@ -343,7 +288,7 @@ inertia_tensor = {
 origin_xyz = Vector3(9e-05, -0.05783, 0)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_3hdby"]
+[sub_resource type="Resource" id="Resource_r83ip"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -354,17 +299,17 @@ type = 1
 size = Vector3(0, 0, 0)
 radius = 0.0
 length = 0.0
-mesh_path = "../meshes/motor.stl"
+mesh_path = "package://robot_art_layer/meshes/motor.stl"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_3ucje"]
+[sub_resource type="Resource" id="Resource_wglgm"]
 script = ExtResource("10_50kos")
 name = "motor"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_3hdby")])
-colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_3qlu7"), SubResource("Resource_2wkdl")])
-inertial = SubResource("Resource_nibki")
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_r83ip")])
+colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_nibki"), SubResource("Resource_3hdby")])
+inertial = SubResource("Resource_3ucje")
 
-[sub_resource type="Resource" id="Resource_r83ip"]
+[sub_resource type="Resource" id="Resource_oqfgn"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, -0.0247, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -375,7 +320,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_wglgm"]
+[sub_resource type="Resource" id="Resource_jk6q2"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(-0.242, -0.0387, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -386,7 +331,7 @@ length = 0.008
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_oqfgn"]
+[sub_resource type="Resource" id="Resource_proep"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0.242, -0.0387, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -397,7 +342,7 @@ length = 0.008
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_jk6q2"]
+[sub_resource type="Resource" id="Resource_pm5d0"]
 script = ExtResource("12_0baai")
 mass = 0.266
 inertia_tensor = {
@@ -411,7 +356,7 @@ inertia_tensor = {
 origin_xyz = Vector3(0, -0.02559, 0)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_proep"]
+[sub_resource type="Resource" id="Resource_e84t2"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -422,17 +367,17 @@ type = 1
 size = Vector3(0, 0, 0)
 radius = 0.0
 length = 0.0
-mesh_path = "../meshes/support.stl"
+mesh_path = "package://robot_art_layer/meshes/support.stl"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_pm5d0"]
+[sub_resource type="Resource" id="Resource_2eyyk"]
 script = ExtResource("10_50kos")
 name = "support_bar"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_proep")])
-colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_r83ip"), SubResource("Resource_wglgm"), SubResource("Resource_oqfgn")])
-inertial = SubResource("Resource_jk6q2")
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_e84t2")])
+colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_oqfgn"), SubResource("Resource_jk6q2"), SubResource("Resource_proep")])
+inertial = SubResource("Resource_pm5d0")
 
-[sub_resource type="Resource" id="Resource_e84t2"]
+[sub_resource type="Resource" id="Resource_t4msm"]
 script = ExtResource("12_0baai")
 mass = 0.001
 inertia_tensor = {
@@ -446,14 +391,14 @@ inertia_tensor = {
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_2eyyk"]
+[sub_resource type="Resource" id="Resource_x0ta8"]
 script = ExtResource("10_50kos")
 name = "encoder"
 visuals = Array[ExtResource("11_k2aci")]([])
 colliders = Array[ExtResource("9_iuyqn")]([])
-inertial = SubResource("Resource_e84t2")
+inertial = SubResource("Resource_t4msm")
 
-[sub_resource type="Resource" id="Resource_t4msm"]
+[sub_resource type="Resource" id="Resource_ej5rq"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, -0.0135, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -464,7 +409,7 @@ length = 0.018
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_x0ta8"]
+[sub_resource type="Resource" id="Resource_2hpam"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, -0.0367, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -475,7 +420,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_ej5rq"]
+[sub_resource type="Resource" id="Resource_knfqs"]
 script = ExtResource("12_0baai")
 mass = 0.0208
 inertia_tensor = {
@@ -489,7 +434,7 @@ inertia_tensor = {
 origin_xyz = Vector3(0, -0.02232, -4e-05)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_2hpam"]
+[sub_resource type="Resource" id="Resource_0lsen"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -500,17 +445,17 @@ type = 1
 size = Vector3(0, 0, 0)
 radius = 0.0
 length = 0.0
-mesh_path = "../meshes/hub.stl"
+mesh_path = "package://robot_art_layer/meshes/hub.stl"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_knfqs"]
+[sub_resource type="Resource" id="Resource_33245"]
 script = ExtResource("10_50kos")
 name = "hub"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_2hpam")])
-colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_t4msm"), SubResource("Resource_x0ta8")])
-inertial = SubResource("Resource_ej5rq")
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_0lsen")])
+colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_ej5rq"), SubResource("Resource_2hpam")])
+inertial = SubResource("Resource_knfqs")
 
-[sub_resource type="Resource" id="Resource_0lsen"]
+[sub_resource type="Resource" id="Resource_6ogap"]
 script = ExtResource("9_iuyqn")
 origin_xyz = Vector3(0, 0, -0.086)
 origin_rpy = Vector3(0, 0, 0)
@@ -521,7 +466,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_33245"]
+[sub_resource type="Resource" id="Resource_vvvxj"]
 script = ExtResource("12_0baai")
 mass = 0.1
 inertia_tensor = {
@@ -535,7 +480,7 @@ inertia_tensor = {
 origin_xyz = Vector3(0, 0, -0.086)
 origin_rpy = Vector3(0, 0, 0)
 
-[sub_resource type="Resource" id="Resource_6ogap"]
+[sub_resource type="Resource" id="Resource_pi0fx"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, 0, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -546,17 +491,17 @@ type = 1
 size = Vector3(0, 0, 0)
 radius = 0.0
 length = 0.0
-mesh_path = "../meshes/bar.stl"
+mesh_path = "package://robot_art_layer/meshes/bar.stl"
 mesh_scale = Vector3(0.001, 0.001, 0.001)
 
-[sub_resource type="Resource" id="Resource_vvvxj"]
+[sub_resource type="Resource" id="Resource_ueqw0"]
 script = ExtResource("10_50kos")
 name = "next_bar"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_6ogap")])
-colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_0lsen")])
-inertial = SubResource("Resource_33245")
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_pi0fx")])
+colliders = Array[ExtResource("9_iuyqn")]([SubResource("Resource_6ogap")])
+inertial = SubResource("Resource_vvvxj")
 
-[sub_resource type="Resource" id="Resource_pi0fx"]
+[sub_resource type="Resource" id="Resource_5amyv"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0, -0.00075, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -565,60 +510,12 @@ material_color = Vector4(0, 0, 0, 0)
 material_texture_path = ""
 type = 0
 size = Vector3(0.02, 0.2, 0.0015)
-radius = 0.0
-length = 0.0
-mesh_path = ""
-mesh_scale = Vector3(1, 1, 1)
-
-[sub_resource type="Resource" id="Resource_ueqw0"]
-script = ExtResource("11_k2aci")
-origin_xyz = Vector3(-0.00925, 0.0035, 0)
-origin_rpy = Vector3(0, 0, 0)
-material_name = "alu"
-material_color = Vector4(0, 0, 0, 0)
-material_texture_path = ""
-type = 0
-size = Vector3(0.0015, 0.2, 0.01)
-radius = 0.0
-length = 0.0
-mesh_path = ""
-mesh_scale = Vector3(1, 1, 1)
-
-[sub_resource type="Resource" id="Resource_5amyv"]
-script = ExtResource("11_k2aci")
-origin_xyz = Vector3(0.00925, 0.0035, 0)
-origin_rpy = Vector3(0, 0, 0)
-material_name = "alu"
-material_color = Vector4(0, 0, 0, 0)
-material_texture_path = ""
-type = 0
-size = Vector3(0.0015, 0.2, 0.01)
 radius = 0.0
 length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
 [sub_resource type="Resource" id="Resource_4cg2x"]
-script = ExtResource("10_50kos")
-name = "track_L"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_pi0fx"), SubResource("Resource_ueqw0"), SubResource("Resource_5amyv")])
-colliders = Array[ExtResource("9_iuyqn")]([])
-
-[sub_resource type="Resource" id="Resource_jyt2c"]
-script = ExtResource("11_k2aci")
-origin_xyz = Vector3(0, -0.00075, 0)
-origin_rpy = Vector3(0, 0, 0)
-material_name = "alu"
-material_color = Vector4(0, 0, 0, 0)
-material_texture_path = ""
-type = 0
-size = Vector3(0.02, 0.2, 0.0015)
-radius = 0.0
-length = 0.0
-mesh_path = ""
-mesh_scale = Vector3(1, 1, 1)
-
-[sub_resource type="Resource" id="Resource_r0ga3"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(-0.00925, 0.0035, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -632,7 +529,7 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_1efoq"]
+[sub_resource type="Resource" id="Resource_jyt2c"]
 script = ExtResource("11_k2aci")
 origin_xyz = Vector3(0.00925, 0.0035, 0)
 origin_rpy = Vector3(0, 0, 0)
@@ -646,17 +543,65 @@ length = 0.0
 mesh_path = ""
 mesh_scale = Vector3(1, 1, 1)
 
-[sub_resource type="Resource" id="Resource_kuwom"]
+[sub_resource type="Resource" id="Resource_r0ga3"]
 script = ExtResource("10_50kos")
-name = "track_R"
-visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_jyt2c"), SubResource("Resource_r0ga3"), SubResource("Resource_1efoq")])
+name = "track_L"
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_5amyv"), SubResource("Resource_4cg2x"), SubResource("Resource_jyt2c")])
 colliders = Array[ExtResource("9_iuyqn")]([])
 
+[sub_resource type="Resource" id="Resource_1efoq"]
+script = ExtResource("11_k2aci")
+origin_xyz = Vector3(0, -0.00075, 0)
+origin_rpy = Vector3(0, 0, 0)
+material_name = "alu"
+material_color = Vector4(0, 0, 0, 0)
+material_texture_path = ""
+type = 0
+size = Vector3(0.02, 0.2, 0.0015)
+radius = 0.0
+length = 0.0
+mesh_path = ""
+mesh_scale = Vector3(1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_kuwom"]
+script = ExtResource("11_k2aci")
+origin_xyz = Vector3(-0.00925, 0.0035, 0)
+origin_rpy = Vector3(0, 0, 0)
+material_name = "alu"
+material_color = Vector4(0, 0, 0, 0)
+material_texture_path = ""
+type = 0
+size = Vector3(0.0015, 0.2, 0.01)
+radius = 0.0
+length = 0.0
+mesh_path = ""
+mesh_scale = Vector3(1, 1, 1)
+
 [sub_resource type="Resource" id="Resource_sa1gs"]
+script = ExtResource("11_k2aci")
+origin_xyz = Vector3(0.00925, 0.0035, 0)
+origin_rpy = Vector3(0, 0, 0)
+material_name = "alu"
+material_color = Vector4(0, 0, 0, 0)
+material_texture_path = ""
+type = 0
+size = Vector3(0.0015, 0.2, 0.01)
+radius = 0.0
+length = 0.0
+mesh_path = ""
+mesh_scale = Vector3(1, 1, 1)
+
+[sub_resource type="Resource" id="Resource_qne5n"]
+script = ExtResource("10_50kos")
+name = "track_R"
+visuals = Array[ExtResource("11_k2aci")]([SubResource("Resource_1efoq"), SubResource("Resource_kuwom"), SubResource("Resource_sa1gs")])
+colliders = Array[ExtResource("9_iuyqn")]([])
+
+[sub_resource type="Resource" id="Resource_8g25f"]
 script = ExtResource("13_f6xbj")
 name = "robot_art_single_layer"
-links = [SubResource("Resource_jga7c"), SubResource("Resource_xuocl"), SubResource("Resource_itdhk"), SubResource("Resource_3ucje"), SubResource("Resource_pm5d0"), SubResource("Resource_2eyyk"), SubResource("Resource_knfqs"), SubResource("Resource_vvvxj"), SubResource("Resource_4cg2x"), SubResource("Resource_kuwom")]
-joints = [SubResource("Resource_th603"), SubResource("Resource_cuaai"), SubResource("Resource_m7mem"), SubResource("Resource_qb2dd"), SubResource("Resource_1oser"), SubResource("Resource_8ddqe"), SubResource("Resource_8wdww"), SubResource("Resource_kigti"), SubResource("Resource_j3b1v")]
+links = [SubResource("Resource_ddqrg"), SubResource("Resource_oh6kk"), SubResource("Resource_2wkdl"), SubResource("Resource_wglgm"), SubResource("Resource_2eyyk"), SubResource("Resource_x0ta8"), SubResource("Resource_33245"), SubResource("Resource_ueqw0"), SubResource("Resource_r0ga3"), SubResource("Resource_qne5n")]
+joints = [SubResource("Resource_th603"), SubResource("Resource_cuaai"), SubResource("Resource_ejva2"), SubResource("Resource_yfb86"), SubResource("Resource_hrn5k"), SubResource("Resource_fhpto"), SubResource("Resource_j3b1v"), SubResource("Resource_jga7c"), SubResource("Resource_n0jpv")]
 materials = {
 "alu": Vector4(0.75, 0.77, 0.8, 1),
 "dark": Vector4(0.25, 0.27, 0.3, 1),
@@ -665,77 +610,95 @@ materials = {
 "steel": Vector4(0.55, 0.57, 0.6, 1)
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_qne5n"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_hbi2u"]
 size = Vector3(0.02, 0.02, 0.2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8g25f"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vv0e3"]
+albedo_color = Color(0.75, 0.77, 0.8, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wtfx0"]
 size = Vector3(0.04, 0.0284, 0.028)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_hbi2u"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_6xh88"]
 height = 0.013
 radius = 0.015
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_vv0e3"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_krwwy"]
+albedo_color = Color(0.88, 0.54, 0.12, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ebsu4"]
 size = Vector3(0.04, 0.0304, 0.028)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_wtfx0"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_yslvt"]
 size = Vector3(0.0543, 0.041, 0.0543)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_6xh88"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gw1lt"]
+albedo_color = Color(0.25, 0.27, 0.3, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p41nh"]
 size = Vector3(0.5, 0.02, 0.02)
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_krwwy"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_6se2l"]
 height = 0.008
 radius = 0.008
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_ebsu4"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_14v5n"]
 height = 0.008
 radius = 0.008
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_yslvt"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vynck"]
+albedo_color = Color(0.55, 0.57, 0.6, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_clib4"]
 height = 0.018
 radius = 0.011
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gw1lt"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_4le5j"]
 size = Vector3(0.04, 0.0284, 0.028)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_p41nh"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ur0hk"]
+albedo_color = Color(0.88, 0.54, 0.12, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3tbud"]
 size = Vector3(0.02, 0.02, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6se2l"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u5wrc"]
 albedo_color = Color(0.75, 0.77, 0.8, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_14v5n"]
-size = Vector3(0.02, 0.0015, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vynck"]
-albedo_color = Color(0.75, 0.77, 0.8, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_clib4"]
-size = Vector3(0.0015, 0.01, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4le5j"]
-albedo_color = Color(0.75, 0.77, 0.8, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_ur0hk"]
-size = Vector3(0.0015, 0.01, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3tbud"]
-albedo_color = Color(0.75, 0.77, 0.8, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_u5wrc"]
-size = Vector3(0.02, 0.0015, 0.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kys5n"]
 albedo_color = Color(0.75, 0.77, 0.8, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6ab6e"]
-size = Vector3(0.0015, 0.01, 0.2)
+size = Vector3(0.02, 0.0015, 0.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_klxpt"]
 albedo_color = Color(0.75, 0.77, 0.8, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_5f0ux"]
+size = Vector3(0.0015, 0.01, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1kigg"]
+albedo_color = Color(0.75, 0.77, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_x4eg8"]
+size = Vector3(0.0015, 0.01, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nikc1"]
+albedo_color = Color(0.75, 0.77, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_85ugh"]
+size = Vector3(0.02, 0.0015, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h3hn8"]
+albedo_color = Color(0.75, 0.77, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_kj345"]
+size = Vector3(0.0015, 0.01, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2qw07"]
+albedo_color = Color(0.75, 0.77, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pp3kq"]
 size = Vector3(0.0015, 0.01, 0.2)
 
 [node name="Projectrout" type="Node3D"]
@@ -774,8 +737,8 @@ sign_flip = true
 
 [node name="ImportRobot" type="Node3D" parent="." node_paths=PackedStringArray("joint_controller", "base_link_logger", "ros_bridge")]
 script = ExtResource("5_mfgf5")
-urdf_file_path = "uid://bnves5r11f6tc"
-package_folder = "res://urdf/urdf"
+urdf_file_path = "uid://big877d0d1p03"
+package_folder = "res://robot_art"
 robot_scale = 1.0
 joint_controller = NodePath("../ArmController")
 base_link_logger = NodePath("../logger")
@@ -783,127 +746,157 @@ ros_bridge = NodePath("../ROS2")
 
 [node name="robot_art_single_layer" type="Node3D" parent="ImportRobot"]
 script = ExtResource("7_d811p")
-urdf = SubResource("Resource_sa1gs")
+urdf = SubResource("Resource_8g25f")
 
 [node name="bar_above_fixed" type="RigidBody3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49935, 0.08136, -0.02633)
 mass = 0.1
 freeze = true
 script = ExtResource("14_va547")
-link = SubResource("Resource_xuocl")
+link = SubResource("Resource_oh6kk")
 
 [node name="bar_above_collision" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/bar_above_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.086)
-shape = SubResource("BoxShape3D_qne5n")
+shape = SubResource("BoxShape3D_hbi2u")
+
+[node name="bar_above_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/bar_above_fixed"]
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_vv0e3")
+mesh = ExtResource("15_0baai")
 
 [node name="clampA" type="RigidBody3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49935, 0.08136, -0.02633)
 mass = 0.028
 script = ExtResource("14_va547")
-link = SubResource("Resource_itdhk")
+link = SubResource("Resource_2wkdl")
 
 [node name="clampA_collision" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/clampA"]
-shape = SubResource("BoxShape3D_8g25f")
+shape = SubResource("BoxShape3D_wtfx0")
 
 [node name="clampA_collision2" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/clampA"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0207, 0)
-shape = SubResource("CylinderShape3D_hbi2u")
+shape = SubResource("CylinderShape3D_6xh88")
+
+[node name="clampA_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/clampA"]
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_krwwy")
+mesh = ExtResource("16_f6xbj")
 
 [node name="pivot" type="RigidBody3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49935, 0.05766, -0.02633)
 mass = 0.2011
 script = ExtResource("14_va547")
-link = SubResource("Resource_3ucje")
+link = SubResource("Resource_wglgm")
 
 [node name="motor_collision" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0237, 0)
-shape = SubResource("BoxShape3D_vv0e3")
+shape = SubResource("BoxShape3D_ebsu4")
 
 [node name="motor_collision2" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0594, 0)
-shape = SubResource("BoxShape3D_wtfx0")
+shape = SubResource("BoxShape3D_yslvt")
+
+[node name="motor_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/pivot"]
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_gw1lt")
+mesh = ExtResource("17_va547")
 
 [node name="support" type="RigidBody3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49935, 0.05766, -0.02633)
 mass = 0.266
 script = ExtResource("14_va547")
-link = SubResource("Resource_pm5d0")
+link = SubResource("Resource_2eyyk")
 
 [node name="support_bar_collision" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/support"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0247, 0)
-shape = SubResource("BoxShape3D_6xh88")
+shape = SubResource("BoxShape3D_p41nh")
 
 [node name="support_bar_collision2" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/support"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.242, -0.0387, 0)
-shape = SubResource("CylinderShape3D_krwwy")
+shape = SubResource("CylinderShape3D_6se2l")
 
 [node name="support_bar_collision3" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/support"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.242, -0.0387, 0)
-shape = SubResource("CylinderShape3D_ebsu4")
+shape = SubResource("CylinderShape3D_14v5n")
+
+[node name="support_bar_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/support"]
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_vynck")
+mesh = ExtResource("18_effes")
 
 [node name="joint" type="RigidBody3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.49935, -0.01824, -0.02633)
 mass = 0.0208
 script = ExtResource("14_va547")
-link = SubResource("Resource_knfqs")
+link = SubResource("Resource_33245")
 
 [node name="hub_collision" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/joint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0135, 0)
-shape = SubResource("CylinderShape3D_yslvt")
+shape = SubResource("CylinderShape3D_clib4")
 
 [node name="hub_collision2" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/joint"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0367, 0)
-shape = SubResource("BoxShape3D_gw1lt")
+shape = SubResource("BoxShape3D_4le5j")
+
+[node name="hub_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/joint"]
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_ur0hk")
+mesh = ExtResource("19_8piux")
 
 [node name="clampB" type="RigidBody3D" parent="ImportRobot/robot_art_single_layer"]
-transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, -4.37114e-08, 0.49935, -0.05494, -0.02633)
+transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, -4.37114e-08, 0.56935, -0.05494, -0.02633)
 mass = 0.1
 script = ExtResource("14_va547")
-link = SubResource("Resource_vvvxj")
+link = SubResource("Resource_ueqw0")
 
 [node name="next_bar_collision" type="CollisionShape3D" parent="ImportRobot/robot_art_single_layer/clampB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.086)
-shape = SubResource("BoxShape3D_p41nh")
+shape = SubResource("BoxShape3D_3tbud")
+
+[node name="next_bar_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/clampB"]
+transform = Transform3D(0.001, 0, 0, 0, -4.37114e-11, 0.001, 0, -0.001, -4.37114e-11, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_u5wrc")
+mesh = ExtResource("15_0baai")
 
 [node name="track_L_fixed" type="Node3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25735, 0.00996, -0.02633)
 script = ExtResource("15_effes")
-link = SubResource("Resource_4cg2x")
+link = SubResource("Resource_r0ga3")
 
 [node name="track_L_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/track_L_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00075, 0)
-material_override = SubResource("StandardMaterial3D_6se2l")
-mesh = SubResource("BoxMesh_14v5n")
+material_override = SubResource("StandardMaterial3D_kys5n")
+mesh = SubResource("BoxMesh_6ab6e")
 
 [node name="track_L_mesh2" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/track_L_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00925, 0.0035, 0)
-material_override = SubResource("StandardMaterial3D_vynck")
-mesh = SubResource("BoxMesh_clib4")
+material_override = SubResource("StandardMaterial3D_klxpt")
+mesh = SubResource("BoxMesh_5f0ux")
 
 [node name="track_L_mesh3" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/track_L_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00925, 0.0035, 0)
-material_override = SubResource("StandardMaterial3D_4le5j")
-mesh = SubResource("BoxMesh_ur0hk")
+material_override = SubResource("StandardMaterial3D_1kigg")
+mesh = SubResource("BoxMesh_x4eg8")
 
 [node name="track_R_fixed" type="Node3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.74135, 0.00996, -0.02633)
 script = ExtResource("15_effes")
-link = SubResource("Resource_kuwom")
+link = SubResource("Resource_qne5n")
 
 [node name="track_R_mesh" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/track_R_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00075, 0)
-material_override = SubResource("StandardMaterial3D_3tbud")
-mesh = SubResource("BoxMesh_u5wrc")
+material_override = SubResource("StandardMaterial3D_nikc1")
+mesh = SubResource("BoxMesh_85ugh")
 
 [node name="track_R_mesh2" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/track_R_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00925, 0.0035, 0)
-material_override = SubResource("StandardMaterial3D_kys5n")
-mesh = SubResource("BoxMesh_6ab6e")
+material_override = SubResource("StandardMaterial3D_h3hn8")
+mesh = SubResource("BoxMesh_kj345")
 
 [node name="track_R_mesh3" type="MeshInstance3D" parent="ImportRobot/robot_art_single_layer/track_R_fixed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00925, 0.0035, 0)
-material_override = SubResource("StandardMaterial3D_klxpt")
-mesh = SubResource("BoxMesh_5f0ux")
+material_override = SubResource("StandardMaterial3D_2qw07")
+mesh = SubResource("BoxMesh_pp3kq")
 
 [node name="joint_clampA" type="Generic6DOFJoint3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.49935, 0.08136, -0.02633)
@@ -921,7 +914,7 @@ angular_limit_x/enabled = false
 angular_limit_x/lower_angle = 1.0
 angular_motor_x/force_limit = 0.002
 script = ExtResource("16_8piux")
-joint = SubResource("Resource_m7mem")
+joint = SubResource("Resource_ejva2")
 metadata/hinge_axis = "x"
 
 [node name="joint_support" type="Generic6DOFJoint3D" parent="ImportRobot/robot_art_single_layer"]
@@ -935,7 +928,7 @@ linear_motor_z/force_limit = 0.5
 angular_motor_z/enabled = true
 angular_motor_z/force_limit = 0.5
 script = ExtResource("16_8piux")
-joint = SubResource("Resource_qb2dd")
+joint = SubResource("Resource_yfb86")
 
 [node name="joint_joint" type="Generic6DOFJoint3D" parent="ImportRobot/robot_art_single_layer"]
 transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0.49935, -0.01824, -0.02633)
@@ -946,15 +939,15 @@ angular_limit_x/lower_angle = 1.0
 angular_motor_x/enabled = true
 angular_motor_x/force_limit = 0.13
 script = ExtResource("16_8piux")
-joint = SubResource("Resource_8ddqe")
+joint = SubResource("Resource_fhpto")
 metadata/hinge_axis = "x"
 
 [node name="joint_clampB" type="Generic6DOFJoint3D" parent="ImportRobot/robot_art_single_layer"]
-transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, -4.37114e-08, 0.49935, -0.05494, -0.02633)
+transform = Transform3D(-4.37114e-08, 4.37114e-08, 1, -4.37114e-08, 1, -4.37114e-08, -1, -4.37114e-08, -4.37114e-08, 0.56935, -0.05494, -0.02633)
 node_a = NodePath("../joint")
 node_b = NodePath("../clampB")
-linear_limit_z/upper_distance = 0.17
-linear_limit_z/lower_distance = 0.03
+linear_limit_z/upper_distance = 0.1
+linear_limit_z/lower_distance = -0.04
 linear_motor_z/enabled = true
 linear_motor_z/force_limit = 20.0
 angular_motor_z/enabled = true
@@ -962,4 +955,4 @@ angular_motor_z/force_limit = 20.0
 angular_spring_z/enabled = true
 angular_spring_z/damping = 0.5
 script = ExtResource("16_8piux")
-joint = SubResource("Resource_8wdww")
+joint = SubResource("Resource_j3b1v")
