@@ -1,0 +1,14 @@
+[remap]
+
+importer="godot_urdf"
+type="PackedScene"
+uid="uid://cil3icep0pkv5"
+path="res://.godot/imported/epicycle_layers.urdf-023895873b89205aa777b2bea941d187.tscn"
+
+[deps]
+
+source_file="res://urdf/urdf/epicycle_layers.urdf"
+dest_files=["res://.godot/imported/epicycle_layers.urdf-023895873b89205aa777b2bea941d187.tscn"]
+
+[params]
+

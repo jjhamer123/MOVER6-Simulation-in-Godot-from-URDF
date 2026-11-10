@@ -84,7 +84,7 @@ static func create_box_visual(
 		_opts: Dictionary, _path: String, material: BaseMaterial3D):
 	var mesh_inst = MeshInstance3D.new()
 	mesh_inst.mesh = BoxMesh.new()
-	mesh_inst.mesh.size = data.size
+	mesh_inst.mesh.size = _box_size(data.size)
 	_finalize(mesh_inst, parent, owner, material, data.origin_xyz, data.origin_rpy)
 
 static func create_cylinder_visual(
@@ -97,7 +97,9 @@ static func create_cylinder_visual(
 	cm.bottom_radius = data.radius
 	mesh_inst.mesh = cm
 	
-	var local_fix = Transform3D.IDENTITY.rotated(Vector3.RIGHT, PI / 2.0)
+	# URDF cylinders run along the link's z axis, which the parser already maps
+	# to Godot's y axis - the same axis Godot cylinders use, so no extra turn.
+	var local_fix = Transform3D.IDENTITY
 	_finalize_with_local_fix(mesh_inst, parent, owner, material, data.origin_xyz, data.origin_rpy, local_fix)
 
 static func create_sphere_visual(
@@ -137,7 +139,7 @@ static func create_box_collision(
 		_opts: Dictionary, _path: String):
 	var coll = CollisionShape3D.new()
 	coll.shape = BoxShape3D.new()
-	coll.shape.size = data.size
+	coll.shape.size = _box_size(data.size)
 	_finalize(coll, parent, owner, null, data.origin_xyz, data.origin_rpy)
 
 static func create_cylinder_collision(
@@ -149,7 +151,9 @@ static func create_cylinder_collision(
 	shape.radius = data.radius
 	coll.shape = shape
 	
-	var local_fix = Transform3D.IDENTITY.rotated(Vector3.RIGHT, PI / 2.0)
+	# URDF cylinders run along the link's z axis, which the parser already maps
+	# to Godot's y axis - the same axis Godot cylinders use, so no extra turn.
+	var local_fix = Transform3D.IDENTITY
 	_finalize_with_local_fix(coll, parent, owner, null, data.origin_xyz, data.origin_rpy, local_fix)
 
 static func create_sphere_collision(
@@ -210,6 +214,12 @@ static func _create_col_shape_from_mesh(
 		coll.scale = mesh_scale * s
 
 # --- Finalize Helpers ---
+
+## URDF box size is (x, y, z) in the link's ROS frame; the parser maps ROS
+## (x, y, z) -> Godot (x, z, -y), so the box extents must be swapped the same way.
+static func _box_size(urdf_size: Vector3) -> Vector3:
+	return Vector3(urdf_size.x, urdf_size.z, urdf_size.y)
+
 
 static func _finalize(
 		node: Node3D, parent: Node, owner: Node, 

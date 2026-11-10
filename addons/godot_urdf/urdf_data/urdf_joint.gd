@@ -16,6 +16,11 @@ extends Resource
 @export var origin_rpy: Vector3
 @export var axis: Vector3
 
+# <mimic joint="..." multiplier="..." offset="..."/>: value = source * multiplier + offset
+@export var mimic_joint: String = ""
+@export var mimic_multiplier: float = 1.0
+@export var mimic_offset: float = 0.0
+
 # Physics
 @export var limit: URDFLimit = null
 @export var dynamics: URDFDynamics = null

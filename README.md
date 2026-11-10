@@ -1,226 +1,141 @@
-# MOVER6 Simulation in Godot (from URDF)
+# Robot Art URDF → Godot-ROS-custom-build (v3)
 
-A Godot 4 simulation of a robotic arm URDF, built from its URDF and
-driven live over ROS 2. The arm can act either as a **standalone physics
-simulation** (commands drive the sim directly) or as a **digital shadow** of a
-real Mover6 (the sim only mirrors state and never actuates), controlled by a
-Simulink model talking to Godot over ROS 2 `JointJog`/`JointState` messages.
+Drop-in files that let the godot_urdf addon in **MOVER6-Simulation-in-Godot-from-URDF**
+(the Godot project inside Godot-ROS-custom-build) load the epicycle drawing robot.
+I tested it in Godot 4.4.1 with Jolt physics. The ROS 2 bridge isn't tested because
+that needs your custom build.
 
-This project started life addressing hardware-accessibility limits in
-robotics education (ELE303 → funded through the University of Sheffield's
-SURE scheme): not every student can get time on a physical arm, but everyone
-can open a simulation. The project isn't tied to the Mover6 specifically -
-it's built as a general **URDF-in, ROS 2-controllable arm-out** pipeline, so
-the same setup works for any serial robot arm you have a URDF for.
+![preview](godot_preview.png)
 
-The arm's geometry, joints, and mass properties are all imported from the
-Mover6 URDF (`urdf/cpr_robot/`) via the `godot_urdf` addon
+## The v3 design in one paragraph
 
-## Important: this repo alone won't run
+Every layer's 500 mm support bar points the same way and never turns. Each end of the bar runs in a
+U-channel track fixed to the frame, and the motor carriage slides along the bar. So every motor
+body always faces the same way, and **joint k sets the absolute direction of arm k**:
+pen = Σ rₖ (cos qₖ, sin qₖ). The top bearings (`pivot2..3`) and the bar slides (`support1..3`) are
+passive and follow by themselves.
 
-`JointJogController` and `JointStatePublisher` (the ROS 2 subscriber and
-publisher used by `ros_2_arm.gd` and the demo scripts) are **not** GDScript -
-they're native classes exposed by the
-[`godot_ros`](https://github.com/nordstream3/Godot-4-ROS2-integration) C++
-module, compiled directly into a custom Godot editor/export binary linked
-against ROS 2 Jazzy. You need that custom binary (built and pointed at your
-ROS 2 install) to open or run this project - the stock Godot editor will
-fail to resolve those classes.
+## What's in here
 
-Everything else - `RobotJointController`, `ArmRig`, `BaseLinkLogger`,
-`RosArmBridge` - is ordinary GDScript checked into this repo.
+| Path | What it is |
+|---|---|
+| `robot_art/robot_art_3_layers.urdf` (+ `.yaml`) | 3 layers + gantry bar + pen + the tracks. The `.yaml` tells the addon to look for meshes in `res://robot_art`. |
+| `robot_art/robot_art_single_layer.urdf` (+ `.yaml`) | One layer with its tracks (same as the STEP file). |
+| `robot_art/robot_art_layer/meshes/*.stl` | Meshes. `package://robot_art_layer/meshes/x.stl` resolves to `res://robot_art/robot_art_layer/meshes/x.stl`. |
+| `addons/stl-io/`, `addons/yaml_dot_gd/` | Your two other addons, unchanged, so a folder replace can't lose them. |
+| `addons/godot_urdf/` | The whole addon (23 scripts). The 5 files below are the ones I changed; the rest are your originals. |
+| `addons/godot_urdf/urdf_parser.gd`, `urdf_data/urdf_joint.gd` | **Patched.** Reads URDF `<mimic>` tags (they used to be skipped). |
+| `addons/godot_urdf/urdf_6dof_joint3d.gd` | **Patched.** Adds prismatic joints (they were locked solid) and passive joints (`effort="0"`). Continuous joints now spin about the joint's local X, which stops Jolt jamming at ±180° (see below). |
+| `addons/godot_urdf/urdf_geometry_factory.gd` | **Patched.** Fixes URDF `<box>` sizes and `<cylinder>` orientation. |
+| `addons/godot_urdf/controller/RobotJointController.gd` | **Patched.** Adds prismatic joints, kinematic mode, mimic joints, guided slides, joint offsets, `min_link_mass` and `disable_self_collision`. |
+| `robot_art_demo.gd`, `RobotArt.tscn` | A ready scene: it loads the robot, spins it as an epicycle drawer and draws the pen trace on an A3 sheet. |
 
-## Requirements
+### About your Mover6
+`Robot.tscn` stores its joints already built, so it behaves as before (I ran it). If you press
+**Reload robot** on the Mover6, its continuous joints are rebuilt to spin about X. I tested a reload with the
+new addon: all 6 joints reached their targets to within 0.0001 rad.
 
-- A custom Godot 4.4 binary with the `godot_ros` module compiled in, linked
-  against **ROS 2 Jazzy** which can be found here https://github.com/jjhamer123/Godot-ROS-custom-build
-  and this repo is a submodule of
-- ROS 2 Jazzy (native Linux is the smoothest path; see *Platform notes*
-  below for Windows/WSL2)
-- Jolt Physics (already selected as the 3D physics engine in
-  `project.godot`)
+## Install
 
-## Repository structure
-
+**If an earlier copy deleted files** (errors about `YAMLParser`, `GodotRobot`, `URDFLink`…, or the
+Mover6 meshes are gone), first get your originals back with git, from the Mover6 project folder:
+```bash
+git status            # shows what was deleted
+git restore addons urdf
 ```
-Robot.tscn                     Main scene: the assembled arm + controllers
-control.gd                     Minimal demo: nudges joint1 at a fixed velocity
-project.godot                  Godot project config (Jolt physics, mobile renderer)
 
-Helpers/
-  arm_rig.gd (ArmRig)          Loads a URDF, wires up the downstream nodes
-  logger.gd (BaseLinkLogger)   Periodically logs the end-effector's pose
-
-ros_2_arm.gd (RosArmBridge)    ROS 2 <-> Godot bridge: JointJog in, JointState
-                                out; SIMULATION vs SHADOW mode; per-joint sign
-                                overrides and soft limits
-
-addons/godot_urdf/             URDF import + robot assembly
-  controller/RobotJointController.gd
-                                Drives Generic6DOFJoint3D motors per joint;
-                                estimates link mass from collision geometry
-                                when the URDF has no <inertial> tag
-  urdf_6dof_joint3d.gd, urdf_parser.gd, urdf_loader.gd, ...
-                                URDF parsing/import pipeline
-
-addons/stl-io/                 STL mesh import (Mover6 link geometry)
-addons/yaml_dot_gd/            YAML parsing (used by the URDF import config)
-
-urdf/cpr_robot/                Mover6 URDF (matches the real cpr_ros2 driver)
-urdf/CPMOVER6.urdf             Older/alternate copy - see Known issues
-urdf/ur5e.urdf                 UR5e URDF, kept for reference/testing
-
-pub_joint_states.gd / .cpp     Legacy/demo: standalone JointState publisher
-ros_2test.gd                   Legacy/demo: fixed joint velocities + angle print
-control(temp_demo).gd          Legacy/demo: sine-wave joint state simulator
-robotfixes.gd                  One-off fix for STL meshes imported with the
-                                wrong up-axis (rotates tagged meshes 90°)
-```
-## Setting up
-
-1. Build the custom Godot binary with `godot_ros` linked against ROS 2
-   Jazzy (see the `godot_ros` project for build instructions), or obtain a
-   prebuilt copy.
-2. Clone this repo and open it with that custom binary - **not** stock
-   Godot.
-3. Source your ROS 2 Jazzy environment before launching Godot from a
-   terminal, so the linked `rclcpp` node can find your ROS 2 graph:
+Then:
+1. Copy everything in this folder into the root of the Mover6 project (the folder with `project.godot`).
+   From a terminal (this merges, so nothing gets deleted):
    ```bash
-   source /opt/ros/jazzy/setup.bash
-   ./godot_ros_binary --path /path/to/this/repo
+   cp -r godot_robot_art/. /path/to/MOVER6-Simulation-in-Godot-from-URDF/
    ```
-4. Open `Robot.tscn`. Confirm the `ArmRig` node's `URDF` export points at
-   `urdf/cpr_robot/robots/CPRMover6.urdf.xacro`.
-5. On the `RosArmBridge` node, set:
-   - `mode`: `SIMULATION` to let incoming `/JointJog` drive the physics, or
-     `SHADOW` to only mirror `/joint_states` without actuating
-   - `max_joint_velocity`: the real arm's max joint speed in rad/s (Mover6's
-   - `joint_sign_overrides`: only needed if a joint visibly moves opposite
-     to the command; leave empty for a fresh URDF (see *Known issues*)
+   If you use a file manager instead, it's still safe if it replaces folders: `addons/` holds all three
+   addons (`godot_urdf` patched, `stl-io` and `yaml_dot_gd` unchanged), and the robot lives in its own
+   new folder, `robot_art/`. Your `urdf/` folder is never touched.
+2. Open the project. Godot imports the URDFs and STLs automatically.
+3. Open `RobotArt.tscn` and press **F6** (Run Current Scene).
 
-## Running it
+### Physics settings (only needed with kinematic mode off)
+Project Settings → Physics (turn on *Advanced Settings*):
 
-- **With ROS 2**: `ros_2test.gd` commands a fixed velocity to
-  joints and prints end joint angle every frame - useful for checking
-  the `godot_ros` link is alive without needing a controller on the other
-  end.
+```
+Common › Physics Ticks per Second                     480
+Jolt Physics 3D › Simulation › Velocity Steps          30
+Jolt Physics 3D › Simulation › Position Steps          20
+Jolt Physics 3D › Simulation › Baumgarte Stabilization Factor  1.0
+```
 
-## Using this with a different arm
+## Kinematic vs physics mode (`RobotArt` node → *Kinematic Mode*)
 
-Nothing about the pipeline is Mover6-specific - the `godot_urdf` addon reads
-any standard URDF (or xacro that resolves to one) and builds the links,
-joints, and collision shapes from it, and `RobotJointController` drives
-whatever `Generic6DOFJoint3D`s come out of that import by joint name. To
-swap in a different robot arm:
+* **On (default):** the parts are placed exactly from the joint values each frame. Each frame the
+  top bearings are set to −(joint above), and each support bar is kept centred between its tracks.
+  I checked the pen tip against the URDF's own forward kinematics: the error is 0.00 mm, every motor stays at 0.000°
+  and every bar stays centred to 0.00 mm. Use this mode for checking drawings and for shadowing the real robot.
+* **Off:** full Jolt physics. The demo adds a guide to each support bar that stops it sliding along
+  its own length or turning, like the tracks do. Everything else is left to physics, so the bearings
+  turn and the bars slide on their own. Over a 30 s drawing at 480 Hz the pen error was
+  1.2 mm (median) and 2.8 mm at worst. At 240 Hz it was 7 mm median and 17 mm at worst.
 
-1. Drop the new URDF (plus its mesh files - STL via `stl-io`, or standard
-   Godot-importable formats) under `urdf/`.
-2. Point `ArmRig`'s `URDF` export at the new file and hit **Load robot**.
-3. Check the joint names that come out (`RobotJointController.get_joint_names()`,
-   or just watch the console on `reinitialize()`) match what you intend to
-   command over ROS 2 - these come straight from the URDF's `<joint name="...">`
-   attributes, so rename joints in the URDF if you want tidier names.
-4. Set `RosArmBridge.max_joint_velocity` to the new arm's real max joint
-   speed, and re-check the mass/axis-sign gotchas below - every one of them
-   is a property of the *URDF*, not of this codebase, so they resurface on
-   any arm whose URDF has the same gaps (no `<inertial>`, axis direction
-   that doesn't match your driver's convention).
+**Why continuous joints changed axis:** Jolt splits a 6DOF joint's rotation into "twist" about X and "swing" about Y and Z.
+A free Z axis jammed at ±180° as soon as gravity made the chain sag a little. The arms stopped
+dead at q = ±π until I moved the hinges to X.
 
-## Controlling the arm over ROS 2
+## Joint names and units (same as the ROS URDF that MATLAB uses)
 
-Once Godot is running the scene, the sim exposes the same two-topic
-interface a real ROS 2-driven arm typically would:
-
-| Topic | Direction | Message type | Purpose |
+| Joint | Meaning | Units / range | Who sets it |
 |---|---|---|---|
-| `/JointJog` | subscribed by Godot | `control_msgs/msg/JointJog` | Command joint velocities |
-| `/joint_states` | published by Godot | `sensor_msgs/msg/JointState` | Reports position + velocity per joint |
+| `joint1..3` | motor of layer k = absolute direction of arm k | rad, continuous | you |
+| `clampB1..3` | arm radius of layer k | m, 0.03 – 0.17 | you |
+| `pivot2..3` | top bearing (`pivot1` is fixed) | rad, = −joint(k−1) | automatic (`<mimic>`) |
+| `support1..3` | support bar centre − carriage centre, along the bar | m, ±0.214 | automatic |
 
-**Commanding the arm** - publish a `JointJog` with `joint_names` matching
-the names reported by `RobotJointController`, and `velocities` as a
-normalized fraction of `max_joint_velocity` (`-1.0` to `1.0`, not raw
-rad/s). Positions/displacements aren't used by this bridge; leave them
-empty. From the command line:
+For an epicycle with frequencies n₁, n₂, n₃ and base speed ω₀, **motor k turns at nₖ·ω₀**. You no
+longer subtract the layer above. The demo uses *Frequencies* = [1, −2, 3].
 
-```bash
-ros2 topic pub /JointJog control_msgs/msg/JointJog \
-  "{joint_names: ['joint1', 'joint2'], velocities: [0.3, -0.2]}" --once
+**Reach limit:** with 500 mm support bars, the bottom layer's carriage hits a ball unit if
+r₁ + r₂ > 214 mm. The demo's radii (100 + 60 mm) are fine. For full reach (340 mm) the bottom
+layer would need roughly a 760 mm bar, with its tracks moved out to match.
+
+The Godot URDFs are built with `rest_radius:=0.07`. The demo sets `joint_offsets = {clampB*: 0.07}`, so all values
+match `epicycle_layers.urdf` in ROS.
+
+## ROS 2
+
+If the custom build's classes exist (`JointJogController`, etc.), the demo adds `ros_2_arm.gd`
+by itself, so `/JointJog` drives the robot and `/joint_states` is published. Demo spinning
+is switched off when ROS is active. Notes:
+* From MATLAB, publish `joint1..3`, `clampB1..3` and `support1..3`. `robotart_joint_states.m` (in the
+  robot_art_layer package, `matlab/`) works out the support values for you. `robot_state_publisher` fills in the mimic pivots.
+* `ros_2_arm.gd` clamps a jog to ±1 × `max_joint_velocity`. For `clampB` joints that is m/s, so send small values (≈0.05).
+* In physics mode the demo sets `motor_direction_overrides = -1` for the motors, because Jolt's motors turn opposite to
+  the URDF axis. A raw `/JointJog` goes through `ros_2_arm.gd` without this sign, so set `joint_sign_overrides` there to −1 (or use kinematic mode).
+
+## Using it in your own Robot scene (ArmRig + ArmController + ROS2)
+
+Use the **Godot copies in `res://robot_art/`**. Don't use the ROS package files (`*_relative.urdf` etc.):
+their `../meshes/` paths can't be found from Godot, so you only get collision boxes.
+
+1. **ImportRobot** (`arm_rig.gd`)
+   * `Urdf File Path` = `res://robot_art/robot_art_3_layers.urdf` (or `robot_art_single_layer.urdf`)
+   * `Package Folder` = `res://robot_art` (not `res://urdf`)
+   * press **Load robot**
+2. **ArmController** (`RobotJointController`)
+   * tick **Kinematic Mode**
+   * `Joint Offsets` → add `clampB1`, `clampB2`, `clampB3`, each `0.07` (single layer: `clampB` `0.07`)
+   * leave **Auto Track Guides** ticked: it centres each support bar between its `track…_L/_R` links
+3. **ROS2**: nothing to change. It drives ArmController as before.
+
+The big light-blue wireframes you see in the editor are just the 6DOF joint gizmos.
+They don't show in the running game. The single-layer URDF sits where it is in the STEP file
+(about 0.5 m along X), so set `Robot Position` to `(-0.499, 0, 0.026)` on ImportRobot to bring it to the origin.
+
+If you'd rather use the URDF importer instead: drag `res://robot_art/robot_art_3_layers.urdf` into a scene.
+The `.yaml` file next to it already points the importer at `res://robot_art`.
+
+## Rebuilding the URDFs after CAD changes (in the robot_art_layer package)
+
 ```
-
-Or from Python with `rclpy`:
-
-```python
-from control_msgs.msg import JointJog
-msg = JointJog()
-msg.joint_names = ["joint1", "joint2"]
-msg.velocities = [0.3, -0.2]
-publisher.publish(msg)  # publisher created on /JointJog
+xacro urdf/epicycle_layers.urdf.xacro rest_radius:=0.07  > robot_art_3_layers.urdf
+xacro urdf/single_layer.urdf.xacro    rest_radius:=0.07  > robot_art_single_layer.urdf
 ```
-
-**Reading the arm's state** - subscribe to `/joint_states` for live
-position/velocity feedback, or watch it directly:
-
-```bash
-ros2 topic echo /joint_states
-```
-
-A few things worth knowing before wiring up a controller:
-
-- Velocities are clamped to `[-1, 1]` and scaled by `max_joint_velocity`
-  inside `RosArmBridge` - sending anything outside that range just gets
-  clamped, it won't overdrive the joint.
-- Soft limits from the URDF are respected: a commanded velocity that would
-  push a joint past its limit (within `limit_margin`) is zeroed out rather
-  than actuating through the stop.
-- In `SHADOW` mode, `/JointJog` commands are still received and logged but
-  never applied to the physics - the arm only reports whatever state it's
-  already in. Use this when you want to observe a real arm's telemetry
-  side-by-side with the sim without the sim fighting the real motion.
-- `is_online()` on `RosArmBridge` reports whether a `/JointJog` message has
-  arrived within `connection_timeout_sec` - useful for a HUD/status
-  indicator if you're building a teaching UI around this.
-- For a closed feedback loop (a controller that reacts to `/joint_states`
-  rather than sending open-loop velocities), watch out for integral windup
-  if the controller's position error sits near zero for a while before a
-  large correction fires - see *Known issues* below.
-
-## Known issues / things to check if you fork this for a new arm
-
-- **Missing `<inertial>` data.** If a URDF link has no mass specified,
-  Godot silently defaults it to 1 kg, which can produce a PI controller
-  overshoot that looks stable at first and then destabilizes into chaotic
-  motion after the arm settles near its target (integral windup interacting
-  with unrealistically light links). `RobotJointController` now estimates a
-  mass from each link's collision geometry when `<inertial>` is absent -
-  check `estimate_missing_mass` / `link_mass_overrides` if a new arm behaves
-  the same way.
-- **Axis sign conventions.** The Mover6 URDF's `<axis>` directions didn't
-  match the real `cpr_ros2` driver's convention for any of its six joints -
-  fixed by negating all six axes directly in
-  `urdf/cpr_robot/robots/CPRMover6.urdf.xacro` (safe here since every joint
-  is `continuous` with no bounded limits to swap). If you bring in a
-  different arm and it moves the wrong way, prefer fixing the URDF's axes
-  over reaching for `joint_sign_overrides` - the override dictionary is a
-  per-Godot-instance patch, not a fix to the source of truth.
-- **STL up-axis.** Some imported STL meshes come in with the wrong up-axis;
-  `robotfixes.gd` rotates any mesh tagged `is_stl` (metadata or Godot group)
-  by 90° about X to correct it. Only needed for meshes actually affected -
-  check visually after import before assuming you need this.
-
-## Platform notes
-
-Native Linux is the most reliable target for the ROS 2 side.
-
-## Credits
-
-- [`godot_urdf`](https://codeberg.org/brean/godot_urdf) by Askar Sulaimanov
-  and Andreas Bresser - URDF import
-- [`stl-io`](https://github.com/) by Valentin Bisson - STL mesh import
-- [`godot_ros`](https://github.com/nordstream3/Godot-4-ROS2-integration) by
-  nordstream3 - the Godot↔ROS 2 native module this project is built on
-- CPR's `cpr_ros2` driver - reference for the real Mover6's joint/velocity
-  conventions
-
-## License
-
-MIT - see `LICENSE`.

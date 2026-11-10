@@ -1,0 +1,14 @@
+[remap]
+
+importer="godot_urdf"
+type="PackedScene"
+uid="uid://cnoyus4jfk7n7"
+path="res://.godot/imported/single_layer.urdf-2b123e30e28dda0eb777d8ac8cb7645a.tscn"
+
+[deps]
+
+source_file="res://urdf/urdf/single_layer.urdf"
+dest_files=["res://.godot/imported/single_layer.urdf-2b123e30e28dda0eb777d8ac8cb7645a.tscn"]
+
+[params]
+

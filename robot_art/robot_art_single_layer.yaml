@@ -1,0 +1,2 @@
+# godot_urdf import options: package://robot_art_layer/... is looked up under this folder
+package_folder: "res://robot_art"

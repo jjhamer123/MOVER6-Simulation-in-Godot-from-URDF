@@ -116,7 +116,14 @@ func get_urdf_joint(parser: XMLParser) -> URDFJoint:
 					parse_joint_limit(parser, joint)
 				"dynamics":
 					parse_joint_dynamics(parser, joint)
-				"joint_properties", "mimic", "safety_controller", "calibration":
+				"mimic":
+					joint.mimic_joint = parser.get_named_attribute_value_safe("joint")
+					var mult := parser.get_named_attribute_value_safe("multiplier")
+					joint.mimic_multiplier = 1.0 if mult.is_empty() else float(mult)
+					joint.mimic_offset = _get_named_float(parser, "offset")
+					if not parser.is_empty():
+						parser.skip_section()
+				"joint_properties", "safety_controller", "calibration":
 					parser.skip_section()
 				_:
 					push_error("Unsupported tag in joint: ", node_name)

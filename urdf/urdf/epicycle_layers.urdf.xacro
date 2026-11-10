@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!--
+  ELE408 Robot Art - modular epicycle robot, 3 layers + pen (v3, Nov 2026)
+  Generated from the CAD meshes. Units: m, kg, rad.
+
+  Every layer's 500 mm support bar points the SAME way (world X) and never turns:
+  each end runs in a U-channel track fixed to the frame (along world Y), and the
+  motor carriage slides along the bar. So every motor body keeps facing the same way,
+  and joint{i} sets the ABSOLUTE direction of arm i:
+
+      pen (x, y) = sum_i  r_i * (cos joint_i, sin joint_i)        r_i = clampB_i value
+
+  One layer (links in brackets):
+    bar{i-1}      200 mm bar the layer hangs from
+      clampA{i}   fixed                        [clampA{i}]      clamp A + 608 bearing
+      pivot{i}    TOP PIVOT, passive bearing   [motor{i}]       carriage + cage + pin + encoder + NEMA 17
+                  layer 1: fixed (hangs from the fixed gantry bar)
+                  layers 2+: continuous, <mimic> = -joint{i-1} (the bearing undoes the arm above's turn)
+      support{i}  prismatic along X, PASSIVE   [support{i}_bar] 500 mm bar + ball units
+                  value = bar centre - carriage centre = -(x of the motor axis)
+      joint{i}    BOTTOM PIVOT, motor shaft, continuous, driven     [hub{i}]
+      clampB{i}   prismatic, value = radius r_i                     [bar{i}]
+    track{i}_L / track{i}_R   fixed to the world (frame), where the ball units roll
+
+  Joints MATLAB must publish on /joint_states: joint1..3, clampB1..3, support1..3.
+  pivot2..3 are mimic joints (robot_state_publisher fills them in).
+
+  Radius = rest_radius + clampB value (rest_radius is 0 for ROS, 0.07 for the Godot files).
+  Build:   xacro epicycle_layers.urdf.xacro > epicycle_layers.urdf
+-->
+<robot name="epicycle_layers" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="rest_radius" default="0.0"/>  <!-- Godot: 0.07 so the URDF zero pose is a real radius -->
+  <xacro:arg name="mesh_path" default="package://robot_art_layer/meshes/"/>
+  <xacro:property name="M" value="$(arg mesh_path)"/>
+  <xacro:property name="R0" value="$(arg rest_radius)"/>
+  <xacro:include filename="robot_art_parts.xacro"/>
+  <xacro:property name="layer_drop" value="0.1363"/>
+  <xacro:property name="pen_drop" value="0.140"/>     <!-- bar centre line -> pen tip -->
+  <xacro:property name="top_z" value="${3*layer_drop + pen_drop}"/>  <!-- gantry bar height: pen tip lands on z = 0 -->
+
+  <xacro:macro name="layer" params="i parent">
+    <joint name="clampA${i}" type="fixed">
+      <parent link="${parent}"/><child link="clampA${i}"/><origin xyz="0 0 0"/>
+    </joint>
+    <xacro:clampA_link name="clampA${i}"/>
+
+    <xacro:if value="${i == 1}">
+      <joint name="pivot${i}" type="fixed">
+        <parent link="clampA${i}"/><child link="motor${i}"/><origin xyz="0 0 ${pivot_z}"/>
+      </joint>
+    </xacro:if>
+    <xacro:unless value="${i == 1}">
+      <!-- the bar above lies 90 deg round from the motor's support-bar direction, hence the -90 deg yaw -->
+      <joint name="pivot${i}" type="continuous">
+        <parent link="clampA${i}"/><child link="motor${i}"/><origin xyz="0 0 ${pivot_z}" rpy="0 0 ${-pi/2}"/>
+        <axis xyz="0 0 1"/><limit effort="0" velocity="10"/><dynamics friction="0.002" damping="0.0"/>
+        <mimic joint="joint${i-1}" multiplier="-1" offset="0"/>
+      </joint>
+    </xacro:unless>
+    <xacro:motor_link name="motor${i}"/>
+    <xacro:support_link name="support${i}" parent="motor${i}"/>
+    <joint name="encoder${i}_mount" type="fixed">
+      <parent link="motor${i}"/><child link="encoder${i}"/><origin xyz="0 0 -0.0479"/>
+    </joint>
+    <link name="encoder${i}"><inertial><mass value="0.001"/><inertia ixx="1e-9" ixy="0" ixz="0" iyy="1e-9" iyz="0" izz="1e-9"/></inertial></link>
+
+    <joint name="joint${i}" type="continuous">
+      <parent link="motor${i}"/><child link="hub${i}"/>
+      <origin xyz="0 0 ${motor_z}"/><axis xyz="0 0 1"/>
+      <limit effort="${motor_torque}" velocity="${max_speed}"/><dynamics damping="0.0"/>
+    </joint>
+    <link name="hub${i}">
+      <visual><geometry><mesh filename="${M}hub.stl" scale="${S}"/></geometry><material name="orange"/></visual>
+      <collision><origin xyz="0 0 -0.0135"/><geometry><cylinder radius="0.011" length="0.018"/></geometry></collision>
+      <collision><origin xyz="0 0 ${clampB_z}"/><geometry><box size="0.040 0.028 0.0284"/></geometry></collision>
+      <inertial><origin xyz="-0.00000 0.00004 -0.02232"/><mass value="0.0208"/><inertia ixx="5.9366e-06" ixy="3.9488e-16" ixz="-1.5550e-12" iyy="6.2704e-06" iyz="1.3147e-08" izz="2.9028e-06"/></inertial>
+    </link>
+
+    <!-- the next bar slides through clamp B; at joint = 0 the arm points along +X (rpy turns the bar mesh 90 deg) -->
+    <joint name="clampB${i}" type="prismatic">
+      <parent link="hub${i}"/><child link="bar${i}"/>
+      <origin xyz="${R0} 0 ${clampB_z}" rpy="0 0 ${pi/2}"/><axis xyz="0 -1 0"/>
+      <limit lower="${r_min - R0}" upper="${r_max - R0}" effort="20" velocity="0.05"/><dynamics damping="0.5"/>
+    </joint>
+    <xacro:bar_link name="bar${i}"/>
+
+    <!-- tracks: long enough for the motor axis to reach (i-1) * r_max either side, plus the ball unit -->
+    <xacro:property name="tz" value="${top_z - (i-1)*layer_drop + pivot_z + track_floor}"/>
+    <xacro:property name="tl" value="${2*(i-1)*r_max + 0.03}"/>
+    <xacro:track name="track${i}_L" x="${-track_x}" y="0" z="${tz}" length="${tl}"/>
+    <xacro:track name="track${i}_R" x="${track_x}"  y="0" z="${tz}" length="${tl}"/>
+  </xacro:macro>
+
+  <!-- ===== 3 layers hanging from a fixed gantry bar ===== -->
+  <link name="world"/>
+  <joint name="gantry_fixed" type="fixed">
+    <parent link="world"/><child link="bar0"/>
+    <origin xyz="0 0 ${top_z}"/>
+  </joint>
+  <xacro:bar_link name="bar0"/>
+  <xacro:layer i="1" parent="bar0"/>
+  <xacro:layer i="2" parent="bar1"/>
+  <xacro:layer i="3" parent="bar2"/>
+
+  <!-- pen at the end of the last bar (where a 4th layer's clamp A would go) -->
+  <joint name="pen_mount" type="fixed">
+    <parent link="bar3"/><child link="pen"/><origin xyz="0 0 -0.010"/>
+  </joint>
+  <link name="pen">
+    <visual><origin xyz="0 0 -0.015"/><geometry><box size="0.03 0.03 0.03"/></geometry><material name="orange"/></visual>
+    <visual><origin xyz="0 0 -0.080"/><geometry><cylinder radius="0.005" length="0.100"/></geometry><material name="red"/></visual>
+    <collision><origin xyz="0 0 -0.080"/><geometry><cylinder radius="0.005" length="0.100"/></geometry></collision>
+    <inertial><origin xyz="0 0 -0.04"/><mass value="0.03"/><inertia ixx="2e-5" ixy="0" ixz="0" iyy="2e-5" iyz="0" izz="1e-6"/></inertial>
+  </link>
+  <joint name="pen_tip_mount" type="fixed">
+    <parent link="pen"/><child link="pen_tip"/><origin xyz="0 0 -0.130"/>
+  </joint>
+  <link name="pen_tip"><inertial><mass value="0.001"/><inertia ixx="1e-9" ixy="0" ixz="0" iyy="1e-9" iyz="0" izz="1e-9"/></inertial></link>
+</robot>

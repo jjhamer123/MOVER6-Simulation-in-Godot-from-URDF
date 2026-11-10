@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://robot_art_demo.gd" id="1_demo"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_paper"]
+size = Vector2(0.42, 0.297)
+
+[sub_resource type="StandardMaterial3D" id="Mat_paper"]
+albedo_color = Color(0.97, 0.96, 0.92, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_table"]
+size = Vector3(1.2, 0.02, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="Mat_table"]
+albedo_color = Color(0.55, 0.42, 0.3, 1)
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 1
+background_color = Color(0.78, 0.8, 0.84, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.6, 0.65, 1)
+ambient_light_energy = 0.6
+
+[node name="RobotArtScene" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 2, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.707, -0.408, 0.577, 0, 0.816, 0.577, -0.707, -0.408, 0.577, 0.55, 0.75, 0.48)
+fov = 50.0
+
+[node name="Paper" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_paper")
+surface_material_override/0 = SubResource("Mat_paper")
+
+[node name="Table" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0105, 0)
+mesh = SubResource("BoxMesh_table")
+surface_material_override/0 = SubResource("Mat_table")
+
+[node name="RobotArt" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.003, 0)
+script = ExtResource("1_demo")

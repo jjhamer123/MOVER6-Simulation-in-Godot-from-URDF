@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!--
+  Shared link definitions for the Robot Art layer (included by both robot files).
+  Numbers come from the CAD (cad/RobotArtLayer.FCStd). Units m, kg, rad.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="S" value="0.001 0.001 0.001"/>
+  <!-- offsets measured from the CAD -->
+  <xacro:property name="pivot_z"  value="-0.0237"/>  <!-- 200 mm bar centre line -> bearing centre (top pivot) -->
+  <xacro:property name="motor_z"  value="-0.0759"/>  <!-- top pivot -> motor front face (bottom pivot) -->
+  <xacro:property name="clampB_z" value="-0.0367"/>  <!-- motor face -> next bar centre line -->
+  <xacro:property name="r_min" value="0.030"/>
+  <xacro:property name="r_max" value="0.170"/>
+  <xacro:property name="motor_torque" value="0.13"/> <!-- N m, NEMA 17 pancake holding torque -->
+  <xacro:property name="max_speed" value="1.0"/>     <!-- rad/s -->
+  <!-- 500 mm support bar + tracks -->
+  <xacro:property name="track_x"     value="0.242"/>   <!-- ball units sit 242 mm either side of the bar centre -->
+  <xacro:property name="track_floor" value="-0.0477"/> <!-- ball bottom = track floor, below the top pivot -->
+  <xacro:property name="slide_max"   value="0.214"/>   <!-- carriage (40 mm) can run until it meets a ball unit -->
+
+  <material name="orange"><color rgba="0.88 0.54 0.12 1"/></material>
+  <material name="alu"><color rgba="0.75 0.77 0.80 1"/></material>
+  <material name="dark"><color rgba="0.25 0.27 0.30 1"/></material>
+  <material name="red"><color rgba="0.8 0.1 0.1 1"/></material>
+  <material name="steel"><color rgba="0.55 0.57 0.60 1"/></material>
+
+  <xacro:macro name="bar_link" params="name">
+    <link name="${name}">
+      <visual><geometry><mesh filename="${M}bar.stl" scale="${S}"/></geometry><material name="alu"/></visual>
+      <collision><origin xyz="0 0.086 0"/><geometry><box size="0.02 0.2 0.02"/></geometry></collision>
+      <inertial><origin xyz="-0.00000 0.08600 0.00000"/><mass value="0.1000"/><inertia ixx="3.3741e-04" ixy="-8.6845e-21" ixz="-3.3719e-10" iyy="8.1483e-06" iyz="-3.5730e-21" izz="3.3741e-04"/></inertial>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="clampA_link" params="name">
+    <link name="${name}">
+      <visual><geometry><mesh filename="${M}clampA.stl" scale="${S}"/></geometry><material name="orange"/></visual>
+      <collision><geometry><box size="0.040 0.028 0.0284"/></geometry></collision>
+      <collision><origin xyz="0 0 -0.0207"/><geometry><cylinder radius="0.015" length="0.013"/></geometry></collision>
+      <inertial><origin xyz="-0.00011 0.00000 -0.01275"/><mass value="0.0280"/><inertia ixx="6.2275e-06" ixy="-7.0054e-12" ixz="3.6730e-08" iyy="7.7408e-06" iyz="6.4456e-10" izz="4.3962e-06"/></inertial>
+    </link>
+  </xacro:macro>
+
+  <!-- carriage + motor cage + pivot pin + encoder board + NEMA 17. Its X axis is the support bar direction. -->
+  <xacro:macro name="motor_link" params="name">
+    <link name="${name}">
+      <visual><geometry><mesh filename="${M}motor.stl" scale="${S}"/></geometry><material name="dark"/></visual>
+      <collision><origin xyz="0 0 -0.0237"/><geometry><box size="0.040 0.028 0.0304"/></geometry></collision>
+      <collision><origin xyz="0 0 -0.0594"/><geometry><box size="0.0543 0.0543 0.041"/></geometry></collision>
+      <inertial><origin xyz="0.00009 -0.00000 -0.05783"/><mass value="0.2011"/><inertia ixx="9.6019e-05" ixy="-3.2819e-11" ixz="5.4181e-09" iyy="9.6824e-05" iyz="-4.1809e-09" izz="5.7848e-05"/></inertial>
+    </link>
+  </xacro:macro>
+
+  <!-- 500 mm 2020 support bar + 2 ball units. Never turns; slides through the carriage (passive). -->
+  <xacro:macro name="support_link" params="name parent">
+    <joint name="${name}" type="prismatic">
+      <parent link="${parent}"/><child link="${name}_bar"/><origin xyz="0 0 0"/><axis xyz="1 0 0"/>
+      <!-- value = support bar centre minus carriage centre, along the bar. Passive (effort 0). -->
+      <limit lower="${-slide_max}" upper="${slide_max}" effort="0" velocity="1.0"/><dynamics friction="0.5" damping="0.0"/>
+    </joint>
+    <link name="${name}_bar">
+      <visual><geometry><mesh filename="${M}support.stl" scale="${S}"/></geometry><material name="steel"/></visual>
+      <collision><origin xyz="0 0 -0.0247"/><geometry><box size="0.50 0.02 0.02"/></geometry></collision>
+      <collision><origin xyz="${-track_x} 0 -0.0387"/><geometry><cylinder radius="0.008" length="0.008"/></geometry></collision>
+      <collision><origin xyz="${track_x} 0 -0.0387"/><geometry><cylinder radius="0.008" length="0.008"/></geometry></collision>
+      <inertial><origin xyz="0 0 -0.02559"/><mass value="0.2660"/><inertia ixx="2.4046e-05" ixy="0" ixz="0" iyy="6.1592e-03" iyz="0" izz="6.1560e-03"/></inertial>
+    </link>
+  </xacro:macro>
+
+  <!-- one U-channel track (20 x 10 x 1.5 mm aluminium, inner gap 17 mm) fixed to the frame, running along Y.
+       Frame origin = middle of the track floor, where the ball unit rolls. -->
+  <xacro:macro name="track" params="name x y z length">
+    <joint name="${name}_fixed" type="fixed">
+      <parent link="world"/><child link="${name}"/><origin xyz="${x} ${y} ${z}"/>
+    </joint>
+    <link name="${name}">
+      <visual><origin xyz="0 0 -0.00075"/><geometry><box size="0.020 ${length} 0.0015"/></geometry><material name="alu"/></visual>
+      <visual><origin xyz="-0.00925 0 0.0035"/><geometry><box size="0.0015 ${length} 0.010"/></geometry><material name="alu"/></visual>
+      <visual><origin xyz="0.00925 0 0.0035"/><geometry><box size="0.0015 ${length} 0.010"/></geometry><material name="alu"/></visual>
+    </link>
+  </xacro:macro>
+</robot>
